@@ -29,51 +29,58 @@
           </el-option>
         </el-select>
       </el-col>
-    </el-row>
+     </el-row>
     </div>
     <div class='active-card'>
       <div class='addCard' @click='handleAddItem'>
         <span class='el-icon-circle-plus-outline'></span><br>
         <span style='line-height:0px;'>新建活动</span>
       </div>
-      <div class='item'>
-        item
-      </div>
+      <card-do title='霍霍霍'></card-do>
+      <card-done></card-done>
+      <card-done></card-done>
+      <card-done></card-done>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'activeIndex',
-    data () {
-      return {
-        input2: '',
-        value: '',
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }]
-      }
-    },
-    methods: {
-      handleAddItem () {
-        this.$router.push({path: '/addActive'})
-      }
+import cardDo from './CardDo'
+import cardDone from './CardDone'
+
+export default {
+  name: 'activeIndex',
+  data () {
+    return {
+      input2: '',
+      value: '',
+      options: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }]
     }
+  },
+  methods: {
+    handleAddItem () {
+      this.$router.push({path: '/addActive'})
+    }
+  },
+  components: {
+    cardDo, cardDone
   }
+}
 </script>
 
 <style lang='less' scoped>
@@ -88,6 +95,7 @@
     display: flex;
     flex-wrap: wrap;
     .addCard{
+      margin-right:20px;
       border-radius:5px;
       cursor: pointer;
       width:200px;

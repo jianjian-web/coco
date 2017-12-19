@@ -6,16 +6,19 @@ import router from './router'
 import axios from 'axios'
 import baseUrl from './config/env'
 import ElementUI from 'element-ui'
+import store from './store/'
+import { sync } from 'vuex-router-sync'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/iconfont/iconfont.css'
 import 'animate.css'
 Vue.use(ElementUI)
-
+sync(store, router)
 Vue.prototype.$http = axios
 axios.defaults.baseURL = baseUrl
 
 // 拦截所有40x的错误
 axios.interceptors.response.use(function (res) {
+  return res
 }, function (err) {
   if (err.response) {
     const status = err.response.status
@@ -31,6 +34,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })

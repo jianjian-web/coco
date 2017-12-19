@@ -69,8 +69,11 @@ export default {
   .layout-container{
     height:calc(~'100% - 50px');
     .aside{
+      // transition: all 0.35s linear;
       height:100%;
-      overflow: hidden;
+      // overflow: visible;
+      overflow-x: visible;
+      overflow-y: hidden;
       .logo{
         height:@headHeight;
         line-height: @headHeight;

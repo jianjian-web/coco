@@ -11,21 +11,25 @@
             <i class="el-icon-menu"></i>
             <span slot="title">我的活动</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="/contact">
+            <i class="el-icon-menu"></i>
+            <span slot="title">联系人</span>
+          </el-menu-item>
+          <el-menu-item index="team">
             <i class="el-icon-menu"></i>
             <span slot="title">我的团队</span>
           </el-menu-item>
-          <el-submenu index="3">
+          <el-submenu index="4">
             <template slot="title">
               <i class="el-icon-setting"></i>
-              我的账户
+              <span slot="title">我的账户</span>
             </template>
               <el-menu-item index="/test1">充值记录</el-menu-item>
               <el-menu-item index="/test2">消费记录</el-menu-item>
           </el-submenu>
-           <el-menu-item index="4">
+           <el-menu-item index="message">
             <i class="el-icon-menu"></i>
-            <span slot="title">通知设置</span>
+            <span slot="title">消息设置</span>
           </el-menu-item>
         </el-menu>
 </template>
@@ -48,12 +52,6 @@
       }
     },
     methods: {
-      handleOpen (key, keyPath) {
-        console.log(key, keyPath)
-      },
-      handleClose (key, keyPath) {
-        console.log(key, keyPath)
-      }
     }
   }
 </script>
@@ -61,6 +59,7 @@
 <style lang='less' scoped>
   .aside-menu{
     height:100%;
-    overflow: auto;
+    overflow-x: visible;
+    overflow-y: auto;
   }
 </style>

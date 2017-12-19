@@ -2,9 +2,9 @@
 
 let baseUrl = ''
 if (process.env.NODE_ENV === 'development') {
-  baseUrl = 'http://127.0.0.1:3000'
+  baseUrl = 'http://call.anavss.com'
 } else if (process.env.NODE_ENV === 'production') {
-  baseUrl = 'http://127.0.0.1:3000/online'
+  baseUrl = 'http://call.anavss.com'
 }
 
 export default baseUrl

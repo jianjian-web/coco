@@ -1,15 +1,19 @@
 <template>
   <div id="app">
-    <co-layout></co-layout>
+    <router-view v-if='$store.state.route.name === "Login"'></router-view>
+    <co-layout v-else></co-layout>
   </div>
 </template>
 
 <script>
-import coLayout from './components/Layout'
+import coLayout from './components/Layout/Layout'
+
 export default {
   name: 'app',
   data () {
-    return {}
+    return {
+      isLogin: true
+    }
   },
   components: {
     coLayout

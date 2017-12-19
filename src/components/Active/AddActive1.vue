@@ -10,7 +10,7 @@
         <div class='activeTitle'>
           <span class='el-icon-edit'></span> <span>基本信息</span><span class='el-icon-caret-right'></span>
         </div>
-        <transition enter-active-class='animated bounceInRight' leave-active-class="animated bounceOutLeft" mode='out-in'>
+        <!-- <transition enter-active-class='animated bounceInRight' leave-active-class="animated bounceOutLeft" mode='out-in'> -->
           <!-- step1 -->
           <div class='activeBody' v-if='active === 1' key='step1'>
             <el-form ref="form" :model="formData1" label-width="150px">
@@ -103,7 +103,7 @@
               </el-form-item>
             </el-form>
           </div>
-        </transition>
+        <!-- </transition> -->
       </div>
     </div>
   </div>
