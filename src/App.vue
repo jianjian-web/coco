@@ -44,6 +44,10 @@ body,html{
 .rt{
   float:right;
 }
+p{
+  padding:0;
+  margin:0;
+}
   ::-webkit-scrollbar
  {/*//轨道两端 */
     width: 6px;

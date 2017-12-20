@@ -77,31 +77,11 @@
           </div>
           <!-- step3 -->
           <div class='activeBody' v-else-if='active === 3' key='step3'>
-            <el-form ref="form" :model="formData1" label-width="150px">
-              <el-form-item>
-                <el-upload
-                  style='width:100%'
-                  drag
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  multiple>
-                  <i class="el-icon-upload"></i>
-                  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div class="el-upload__tip" slot="tip" style='text-align:center'>支持扩展名:.xls,.xlsx...</div>
-                </el-upload>
-              </el-form-item>
-
-              <el-form-item class='btnGroup'>
-                <el-button @click='active = 1'>
-                  上一步，填写基本信息
-                </el-button>
-                <el-button type='primary'>
-                  预览
-                </el-button>
-                <el-button type='primary' @click='active = 3'>
-                  下一步，导入联系人
-                </el-button>
-              </el-form-item>
-            </el-form>
+            <co-transfer></co-transfer>
+          </div>
+          <!-- step4 -->
+          <div class='activeBody' v-else-if='active === 4' key='step4'>
+            // TODO:
           </div>
         <!-- </transition> -->
       </div>
@@ -110,35 +90,47 @@
 </template>
 
 <script>
-  export default {
-    name: 'addActive1',
-    data () {
-      return {
-        active: 1,
-        titleTxt: '基础信息',
-        formData1: {
-          name: '',
-          type: '',
-          content: '',
-          startTime: '',
-          endTime: '',
-          callResult: [],
-          questions: [
-            {
-              index: 0,
-              txt: ''
-            },
-            {
-              index: 1,
-              txt: ''
-            }
-          ]
-        }
+import coTransfer from '../common/Transfer'
+
+export default {
+  name: 'addActive1',
+  data () {
+    return {
+      active: 1,
+      titleTxt: '基础信息',
+      formData1: {
+        name: '',
+        type: '',
+        content: '',
+        startTime: '',
+        endTime: '',
+        callResult: [],
+        questions: [
+          {
+            index: 0,
+            txt: ''
+          },
+          {
+            index: 1,
+            txt: ''
+          }
+        ]
       }
+    }
+  },
+  components: {
+    coTransfer
+  },
+  methods: {
+    handleChange (value, direction, movedKeys) {
+      console.log(value, direction, movedKeys)
     },
-    methods: {
+    renderFunc (h, option) {
+      // console.dir(option)
+      return <span>{ option.key } - { option.label }</span>
     }
   }
+}
 </script>
 
 <style lang='less' scoped>

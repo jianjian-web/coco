@@ -13,10 +13,12 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "axios": "^0.17.1",
+    "echarts": "^3.8.5",
     "element-ui": "^2.0.8",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "vue": "^2.5.2",
+    "vue-echarts-v3": "^1.0.18",
     "vue-router": "^3.0.1",
     "vuex": "^2.4.0",
     "vuex-persistedstate": "^2.0.0",

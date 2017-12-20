@@ -27,7 +27,7 @@
         <span>总联系人</span>
       </div>
     </div>
-    <div class='mark'>
+    <div class='mark' @click='handleShowDetails'>
       <span>teteeee</span>
       <span>teteeee</span>
       <span>teteeee</span>
@@ -48,6 +48,11 @@ export default{
     title: {
       type: String,
       default: '活动名称'
+    }
+  },
+  methods: {
+    handleShowDetails () {
+      this.$router.push({path: '/active/details'})
     }
   }
 }
@@ -116,6 +121,7 @@ export default{
   }
   &:hover .mark{
     display: flex;
+    cursor: pointer;
   }
   .mark{
     position: absolute;
