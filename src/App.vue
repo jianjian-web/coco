@@ -68,4 +68,10 @@ p{
     -webkit-box-shadow: inset 0 0 6px rgba(139,139,139,0.3);
     background-color: #dbdee2;
 }
+.el-input__inner{ /* 将el-input的高度调小一下 */
+  height:30px;
+}
+.el-input__icon{
+  line-height: 30px;
+}
 </style>
