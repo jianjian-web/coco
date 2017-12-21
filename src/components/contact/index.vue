@@ -2,178 +2,264 @@
   <div class='contact'>
     <div class='titleContainer'>
      <el-row>
-      <el-col :span="4" class='row-item'>
+      <el-col :span='4' class='row-item'>
         <el-input
-          placeholder="请输入姓名/公司名称/手机号"
-          suffix-icon="el-icon-search"
-          v-model="input2">
+          placeholder='请输入姓名/公司名称/手机号'
+          suffix-icon='el-icon-search'
+          v-model='input2'>
         </el-input>
       </el-col>
-      <el-col :span="4" class='row-item'>
-        <el-select v-model="value" placeholder="标签" style='width:100%'>
+      <el-col :span='4' class='row-item'>
+        <el-select v-model='searchTag' placeholder='标签' style='width:100%'>
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for='item in tagsOption'
+            :key='item'
+            :label='item'
+            :value='item'>
           </el-option>
         </el-select>
       </el-col>
-      <el-col :span="4" class='row-item'>
-        <el-select v-model="value2" placeholder="所属活动分组" style='width:100%'>
+      <el-col :span='4' class='row-item'>
+        <el-select v-model='value2' placeholder='所属活动分组' style='width:100%'>
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for='item in tagsOption'
+            :key='item'
+            :label='item'
+            :value='item'>
           </el-option>
         </el-select>
       </el-col>
-    </el-row>
+     </el-row>
     </div>
     <div class='total'>
       <span>共搜索到 22 条数据</span>
     </div>
     <div class='marginTop'>
-      <el-button type='primary' size="medium">批量导入</el-button>
-      <el-button size="medium">添加联系人</el-button>
-      <el-button size="medium">打标签</el-button>
+      <el-button type='primary' size='medium' @click='showImport = true' @refrash='refreshPage'>批量导入</el-button>
+      <el-button size='medium' @click='handleAddClick'>添加联系人</el-button>
+      <el-button size='medium' :disabled="selections.length == 0" @click='showTags = true'>打标签</el-button>
+      <el-button type='danger' size='medium' @click='handleMoreDelete' :disabled="selections.length == 0">删除</el-button>
     </div>
     <div class='marginTop tip'>
-      <span class='el-icon-info'></span>  已选择<span>2</span>项
+      <span class='el-icon-info'></span>  已选择<span v-text='selections.length' style='display:inline-block;width:20px;text-align:center'></span>项
     </div>
     <div class='tableWrapper marginTop'>
       <el-table
-        :data="tableData"
+        :data='contactData'
         border
-        style="width: 100%">
+        style='width: 100%'
+        max-height='450'
+        @selection-change='handleSelectionChange'
+        >
         <el-table-column
-          type="selection"
-          width="55"
+          type='selection'
+          width='55'
           align='center'
           >
         </el-table-column>
         <el-table-column
           fixed
-          prop="name"
-          label="姓名"
+          prop='name'
+          label='姓名'
           align='center'
           width='120'
           >
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="公司名称"
+          prop='company'
+          label='公司名称'
           align='center'
           >
         </el-table-column>
         <el-table-column
-          prop="province"
-          label="手机号码"
-          width="150"
-          align="center"
-          >
-        </el-table-column>
-        <el-table-column
-          prop="city"
-          label="邮箱"
-          width="180"
+          prop='telphone'
+          label='手机号码'
+          width='150'
           align='center'
           >
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="标签"
-          width="300"
+          prop='email'
+          label='邮箱'
+          width='180'
           align='center'
           >
         </el-table-column>
         <el-table-column
-          prop="zip"
-          label="所属活动分组"
-          width="120"
+          label='标签'
           align='center'
           >
-        </el-table-column>
-        <el-table-column
-          prop="date"
-          label="创建时间"
-          align='center'
-          >
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="150"
-          align='center'
-          >
-          <template slot-scope="scope">
-            <el-button type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+          <template slot-scope='scope'>
+            <div class='tagList'>
+              <el-tag type='success' v-for='(item,index) in scope.row.tagList' :key='index' v-text='item'></el-tag>
+            </div>
           </template>
         </el-table-column>
-  </el-table>
+        <el-table-column
+          prop='createTime'
+          label='创建时间'
+          align='center'
+          >
+        </el-table-column>
+        <el-table-column
+          fixed='right'
+          label='操作'
+          width='140'
+          align='center'
+          >
+          <template slot-scope='scope'>
+            <el-button type='text' size='small' @click='handleLook(scope.row)'>查看</el-button>
+            <el-button type='text' size='small' @click='handleEdit(scope.row)'>编辑</el-button>
+            <el-button type='text' size='small' @click='handleDelete(scope.row.id)'>删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class='pagination'>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </div>
     </div>
+    <dialog-edit 
+      :dialogVisible='showDialog' 
+      @refresh='refreshPage'  
+      @close='showDialog = false' 
+      :data='editData'
+      :type='dialogType'
+      :tags='tagsOption'
+      > 
+    </dialog-edit>
+
+    <dialog-import @close='showImport = false' :dialogVisible='showImport' ></dialog-import>
+
+    <dialog-tags @tags='handleMoreTags' @close='showTags = false' :dialogVisible='showTags' :tags='tagsOption'></dialog-tags>
   </div>
 </template>
 
 <script>
 /* 联系人 */
+import {mapMutations} from 'vuex'
+import {SET_CONTACT_USERID} from '../../store/mutation-types'
+import dialogEdit from './DialogEdit'
+import dialogImport from './DialogImport'
+import dialogTags from './DialogAddTag'
 export default {
   name: 'contact',
   data () {
     return {
-      value: '',
+      searchTag: '',
       value2: '',
       input2: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '13585517742',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '758507292@qq.com',
-          zip: 200333
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }]
+      tagsOption: [],
+      contactData: [],
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
+      userId: '',
+      showDialog: false,
+      editData: {},
+      dialogType: 'edit', // 用于dialog区分是编辑还是添加
+      showImport: false,
+      showTags: false,
+      selections: []
+    }
+  },
+  created () {
+    this.refreshPage()
+    this.handleGetTags()
+  },
+  components: {
+    dialogEdit, dialogImport, dialogTags
+  },
+  methods: {
+    ...mapMutations([
+      SET_CONTACT_USERID
+    ]),
+    handleGetTags () { // 获取所有tags
+      this.$http.get('/contact/tags').then(res => {
+        this.tagsOption = res.data.data
+      }).catch()
+    },
+    refreshPage () {
+      this.$http.get(`/contact/${this.currentPage}/${this.pageSize}`).then(res => {
+        this.total = res.data.totalCount
+        this.contactData = res.data.data
+      }).catch(err => {
+        console.log('获取联系人列表数据错误')
+        console.dir(err)
+      })
+    },
+    handleSizeChange (val) {
+      // console.log(`每页 ${val} 条`)
+      this.pageSize = val
+      this.refreshPage()
+    },
+    handleCurrentChange (val) {
+      // console.log(`当前页: ${val}`)
+      this.currentPage = val
+      this.refreshPage()
+    },
+    handleLook (val) {
+      this[SET_CONTACT_USERID](val.id)
+      this.$router.push({path: '/contact/details'})
+    },
+    handleEdit (v) {
+      this.dialogType = 'edit'
+      this.showDialog = true
+      this.editData = v
+      console.dir(this.editData)
+    },
+    handleAddClick () {
+      this.dialogType = 'add'
+      this.showDialog = true
+    },
+    handleSelectionChange (val) { // 勾选回调
+      this.selections = val
+    },
+    handleMoreDelete () { // 批量删除
+      let ids = []
+      ids = this.selections.map(item => {
+        return item.id
+      })
+      this.$http.patch('/contact', {
+        params: ids
+      }).then(res => {
+        // console.dir(res)
+        this.refreshPage()
+      }).catch(err => {
+        console.log('批量删除失败')
+        console.dir(err)
+      })
+    },
+    handleMoreTags (tags) { // 将选中的用户批量打标签
+      let ids = []
+      ids = this.selections.map(item => {
+        return item.id
+      })
+      this.$http.patch('/contact/tags', {
+        params: {
+          ids, tags
+        }
+      }).then(res => {
+        this.refreshPage()
+      }).catch(err => {
+        console.log('打标签出错')
+        console.dir(err)
+      })
+    },
+    handleDelete (v) { // 删除一个
+      this.$http.patch(`/contact/${v}`).then(res => {
+        this.refreshPage()
+      }).catch(err => {
+        console.log('删除失败')
+        console.dir(err)
+      })
     }
   }
 }
@@ -207,7 +293,21 @@ export default {
     }
   }
   .tableWrapper{
-
+    .pagination{
+      float: right;
+      margin-top:20px;
+    }
+  }
+  .tagList{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    span{
+      margin:2px;
+      padding:0 3px;
+      height:22px;
+      line-height: 22px;
+    }
   }
 }
 </style>

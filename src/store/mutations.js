@@ -1,6 +1,7 @@
 import {
   USER_INFO,
-  INIT_STATE
+  INIT_STATE,
+  SET_CONTACT_USERID
 } from './mutation-types.js'
 
 export default {
@@ -9,5 +10,8 @@ export default {
   },
   [INIT_STATE] (state) {
     state.userInfo = null
+  },
+  [SET_CONTACT_USERID] (state, id) {
+    state.contactUserId = id
   }
 }

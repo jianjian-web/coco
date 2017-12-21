@@ -5,6 +5,7 @@ const AddActive = () => import('@/components/Active/AddActive.vue')
 const Details = () => import('@/components/Active/DetailsActive')
 const Login = () => import('@/components/Login/Login.vue')
 const Contact = () => import('@/components/contact/')
+const ContactDetails = () => import('@/components/contact/ContactDetails')
 const Team = () => import('@/components/Team/')
 const Message = () => import('@/components/Message/')
 
@@ -42,6 +43,11 @@ export default new Router({
       path: '/contact',
       name: 'Contact',
       component: Contact
+    },
+    { // 联系人详情
+      path: '/contact/details',
+      name: 'contactDetails',
+      component: ContactDetails
     },
     {
       path: '/team',

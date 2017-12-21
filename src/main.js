@@ -15,11 +15,28 @@ Vue.use(ElementUI)
 sync(store, router)
 Vue.prototype.$http = axios
 axios.defaults.baseURL = baseUrl
+axios.defaults.withCredentials = true
+
+// axios.interceptors.request.use(function (req) {
+//   console.dir(req)
+//   return req
+// })
 
 // 拦截所有40x的错误
 axios.interceptors.response.use(function (res) {
-  return res
+  // console.dir(res)
+  const code = res.data && res.data.code
+  if (!code) {
+    console.log('结果无data数据')
+  } else if (code === 'SESSION_TIMEOUT') { // 会话超时
+    router.push({path: '/login'})
+  } else if (code === 'SUCCESS') {
+    return res
+  } else {
+    ElementUI.Message.error(res.data.message)
+  }
 }, function (err) {
+  console.dir(err)
   if (err.response) {
     const status = err.response.status
     if (status === 401) {

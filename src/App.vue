@@ -29,9 +29,13 @@ export default {
   height:100%;
   background:#F0F2F5;
   font-size:14px;
+  color:#666;
 }
 *{
   box-sizing: border-box;
+}
+a{
+  text-decoration: none;
 }
 body,html{
   margin:0;
@@ -73,5 +77,11 @@ p{
 }
 .el-input__icon{
   line-height: 30px;
+}
+.el-range-input{ /* 修复日期input不对其 */
+  height:auto!important;
+}
+.el-range-editor.el-input__inner{ /* 修复日期input不对其 */
+  padding:0 10px;
 }
 </style>
