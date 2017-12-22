@@ -64,8 +64,10 @@
 </template>
 
 <script>
+import curd from '../../mixin/curd'
 export default{
   name: 'dialogEdit',
+  mixins: [curd],
   data () {
     return {
       isVisible: false,
@@ -86,26 +88,9 @@ export default{
         if (valid) { // 新增联系人
           console.log(this.type)
           if (this.type === 'add') {
-            this.$http.post('/contact', {
-              params: this.formData
-            }).then(res => {
-              console.dir(res)
-              this.$emit('refresh')
-              this.handleClose()
-            }).catch(err => {
-              console.log('新增联系人失败')
-              console.dir(err)
-            })
+            this.$_addOne('contact', this.formData)
           } else {
-            this.$http.put(`/contact/${this.formData.id}`, {
-              params: this.formData
-            }).then(res => {
-              this.$emit('refresh')
-              this.handleClose()
-            }).catch(err => {
-              console.log('修改联系人信息失败')
-              console.dir(err)
-            })
+            this.$_Update('contact', this.formData.id, this.formData)
           }
         } else {
           console.log('error submit!!')

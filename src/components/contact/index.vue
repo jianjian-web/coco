@@ -35,10 +35,10 @@
       <span>共搜索到 22 条数据</span>
     </div>
     <div class='marginTop'>
-      <el-button type='primary' size='medium' @click='showImport = true' @refrash='refreshPage'>批量导入</el-button>
+      <el-button type='primary' size='medium' @click='showImport = true'>批量导入</el-button>
       <el-button size='medium' @click='handleAddClick'>添加联系人</el-button>
       <el-button size='medium' :disabled="selections.length == 0" @click='showTags = true'>打标签</el-button>
-      <el-button type='danger' size='medium' @click='handleMoreDelete' :disabled="selections.length == 0">删除</el-button>
+      <el-button type='danger' size='medium' @click='$_deleteMore("contact", selections)' :disabled="selections.length == 0">删除</el-button>
     </div>
     <div class='marginTop tip'>
       <span class='el-icon-info'></span>  已选择<span v-text='selections.length' style='display:inline-block;width:20px;text-align:center'></span>项
@@ -110,7 +110,7 @@
           <template slot-scope='scope'>
             <el-button type='text' size='small' @click='handleLook(scope.row)'>查看</el-button>
             <el-button type='text' size='small' @click='handleEdit(scope.row)'>编辑</el-button>
-            <el-button type='text' size='small' @click='handleDelete(scope.row.id)'>删除</el-button>
+            <el-button type='text' size='small' @click='$_deleteOne("contact",scope.row.id)'>删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -136,7 +136,7 @@
       > 
     </dialog-edit>
 
-    <dialog-import @close='showImport = false' :dialogVisible='showImport' ></dialog-import>
+    <dialog-import @refresh='refreshPage' @close='showImport = false' :dialogVisible='showImport' :uploadUrl='"/contact/import"'></dialog-import>
 
     <dialog-tags @tags='handleMoreTags' @close='showTags = false' :dialogVisible='showTags' :tags='tagsOption'></dialog-tags>
   </div>
@@ -147,10 +147,13 @@
 import {mapMutations} from 'vuex'
 import {SET_CONTACT_USERID} from '../../store/mutation-types'
 import dialogEdit from './DialogEdit'
-import dialogImport from './DialogImport'
+// import dialogImport from './DialogImport'
+import dialogImport from '../common/CoUpload'
 import dialogTags from './DialogAddTag'
+import curd from '../../mixin/curd'
 export default {
   name: 'contact',
+  mixins: [curd],
   data () {
     return {
       searchTag: '',
@@ -222,21 +225,6 @@ export default {
     handleSelectionChange (val) { // 勾选回调
       this.selections = val
     },
-    handleMoreDelete () { // 批量删除
-      let ids = []
-      ids = this.selections.map(item => {
-        return item.id
-      })
-      this.$http.patch('/contact', {
-        params: ids
-      }).then(res => {
-        // console.dir(res)
-        this.refreshPage()
-      }).catch(err => {
-        console.log('批量删除失败')
-        console.dir(err)
-      })
-    },
     handleMoreTags (tags) { // 将选中的用户批量打标签
       let ids = []
       ids = this.selections.map(item => {
@@ -250,14 +238,6 @@ export default {
         this.refreshPage()
       }).catch(err => {
         console.log('打标签出错')
-        console.dir(err)
-      })
-    },
-    handleDelete (v) { // 删除一个
-      this.$http.patch(`/contact/${v}`).then(res => {
-        this.refreshPage()
-      }).catch(err => {
-        console.log('删除失败')
         console.dir(err)
       })
     }

@@ -8,7 +8,7 @@
     :before-close="handleClose">
     <div class='main'>
       <div class='title'>
-        <span class='lf'>使用导入功能，可以快速批量添加多名联系人</span> 
+        <span class='lf'>使用导入功能，可以快速批量添加多名人员</span> 
         <p class='rt'><span>下载</span> <a href="#" class='download'>导入模板</a></p>
       </div>
       <div>
@@ -44,16 +44,16 @@ export default{
           'Content-Type': 'multipart/form-data'
         }
       }
-      this.$http.post('/contact/import', formData, config).then(res => {
+      this.$http.post(this.uploadUrl, formData, config).then(res => {
         console.dir(res)
-        this.$emit('refrash')
+        this.$emit('refresh')
         this.handleClose()
       }).catch(err => {
+        console.log('上传失败')
         console.dir(err)
       })
     },
     getFile (event) {
-      console.log('ee')
       this.file = event.target.files[0]
       if (this.file) {
         this.uploadOk = false
@@ -66,6 +66,10 @@ export default{
     dialogVisible: {
       type: Boolean,
       default: false
+    },
+    uploadUrl: {
+      type: String,
+      required: true
     }
   },
   watch: {

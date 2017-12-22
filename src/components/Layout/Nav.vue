@@ -29,7 +29,7 @@
           </el-submenu>
            <el-menu-item index="message">
             <i class="el-icon-menu"></i>
-            <span slot="title">消息设置</span>
+            <span slot="title">设置</span>
           </el-menu-item>
         </el-menu>
 </template>

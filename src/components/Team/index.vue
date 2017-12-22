@@ -10,17 +10,7 @@
         </el-input>
       </el-col>
       <el-col :span="4" class='row-item'>
-        <el-select v-model="value" placeholder="标签" style='width:100%'>
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="4" class='row-item'>
-        <el-select v-model="value2" placeholder="所属活动分组" style='width:100%'>
+        <el-select v-model="status" placeholder="状态" style='width:100%' @change='handleStatusChange'>
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -35,116 +25,148 @@
       <span>共搜索到 22 条数据</span>
     </div>
     <div class='marginTop'>
-      <el-button type='primary' size="medium">批量导入</el-button>
-      <el-button size="medium">添加人员</el-button>
+      <el-button type='primary' size="medium" @click='showImport = true'>批量导入</el-button>
+      <el-button size="medium" @click='shwoAddDialog = true'>添加人员</el-button>
+      <el-button type='danger' size='medium' @click='$_deleteMore("member", selections)' :disabled="selections.length == 0">禁用</el-button>
     </div>
     <!-- <div class='marginTop tip'>
       <span class='el-icon-info'></span>  已选择<span>2</span>项
     </div> -->
     <div class='tableWrapper marginTop'>
       <el-table
-        :data="tableData"
+        :data="teamData"
         border
-        style="width: 100%">
+        style="width: 100%"
+        max-height='450'
+        @selection-change='handleSelectionChange'
+        >
+         <el-table-column
+          type='selection'
+          width='55'
+          align='center'
+          >
+        </el-table-column>
         <el-table-column
           fixed
-          prop="name"
+          prop="nickname"
           label="姓名"
           align='center'
-          width='120'
           >
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="人员ID"
-          align='center'
-          >
-        </el-table-column>
-        <el-table-column
-          prop="province"
+          prop="phone"
           label="手机号码/固话"
           align="center"
           >
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="角色"
-          align='center'
-          >
-        </el-table-column>
-        <el-table-column
           fixed="right"
           label="操作"
-          width="150"
           align='center'
+          width='160'
           >
           <template slot-scope="scope">
-            <!-- <el-button type="text" size="small">查看</el-button> -->
-            <el-button type="text" size="small">编辑</el-button>
+            <!-- <el-button type="text" size="small" @click='handleLook(scope.row)'>查看</el-button> -->
+            <el-button type="text" size="small" @click='handleEdit(scope.row)'>编辑</el-button>
+            <el-button type="text" size="small" @click='handleToggleStatus(scope.row.id)'>{{status === 'YES' ? '禁用' : '启用'}}</el-button>
           </template>
         </el-table-column>
-  </el-table>
+      </el-table>
+      <div class='pagination'>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </div>
     </div>
+    <dialog-edit @refresh='refreshPage' @close='showEditDialog = false' :dialogVisible='showEditDialog' :data='editData'></dialog-edit>
+    <dialog-add @refresh='refreshPage' @close='shwoAddDialog = false' :dialogVisible='shwoAddDialog'></dialog-add>
+    <dialog-import @refresh='refreshPage' @close='showImport = false' :dialogVisible='showImport' :uploadUrl='"/member/import"'></dialog-import>
   </div>
 </template>
 
 <script>
-/* 联系人 */
+/* 我的团队 */
+import dialogEdit from './DialogEdit'
+import dialogAdd from './DialogAdd'
+import dialogImport from '../common/CoUpload'
+import generalOptions, {generalStatus} from '../../enums/status'
+import curd from '../../mixin/curd'
 export default {
   name: 'myTeam',
+  mixins: [curd],
   data () {
     return {
-      value: '',
+      status: generalStatus.yes,
       value2: '',
       input2: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '13585517742',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '758507292@qq.com',
-          zip: 200333
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }]
+      options: generalOptions('启用', '禁用'),
+      currentPage: 1,
+      total: 0,
+      pageSize: 10,
+      teamData: [],
+      selections: [],
+      showEditDialog: false,
+      editData: {}, // 点击编辑后获取的当前行的数据，传给dialog
+      shwoAddDialog: false,
+      showImport: false
+    }
+  },
+  created () {
+    this.refreshPage()
+  },
+  components: {
+    dialogEdit, dialogAdd, dialogImport
+  },
+  methods: {
+    refreshPage (isValid) {
+      this.$http.get(`/member/${this.currentPage}/${this.pageSize}`, {
+        params: {
+          params: {isValid: isValid || generalStatus.yes}
+        }
+      }).then(res => {
+        this.total = res.data.totalCount
+        this.teamData = res.data.data
+      }).catch(err => {
+        console.log('获取联系人列表数据错误')
+        console.dir(err)
+      })
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.refreshPage()
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.refreshPage()
+    },
+    handleSelectionChange (val) { // 勾选回调
+      this.selections = val
+    },
+    handleEdit (v) {
+      this.showEditDialog = true
+      this.editData = v
+      console.dir(this.editData)
+    },
+    handleToggleStatus (id) {
+      if (this.status === 'YES') {
+        this.$_deleteOne('member', id)
+      } else {
+        this.$http.patch(`/member/enable/${id}`).then(res => {
+          this.refreshPage('NO')
+        }).catch(err => {
+          console.log('启用失败')
+          console.dir(err)
+        })
+      }
+    },
+    handleStatusChange (v) {
+      this.refreshPage(this.status)
     }
   }
 }
@@ -164,21 +186,11 @@ export default {
     margin-top:30px;
     color:#666;
   }
-  // .tip{
-  //   background:#E6F3FC;
-  //   padding:10px;
-  //   border-radius: 5px;
-  //   color:#666;
-  //   span:nth-child(1){
-  //     color:#108EE9;
-  //     margin-right:10px;
-  //   }
-  //   span:nth-child(2){
-  //     color:#108EE9;
-  //   }
-  // }
   .tableWrapper{
-
+    .pagination{
+      float: right;
+      margin-top:20px;
+    }
   }
 }
 </style>

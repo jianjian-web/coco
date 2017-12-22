@@ -34,6 +34,7 @@ axios.interceptors.response.use(function (res) {
     return res
   } else {
     ElementUI.Message.error(res.data.message)
+    console.dir(res)
   }
 }, function (err) {
   console.dir(err)
