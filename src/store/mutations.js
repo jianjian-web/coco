@@ -1,7 +1,8 @@
 import {
   USER_INFO,
   INIT_STATE,
-  SET_CONTACT_USERID
+  SET_CONTACT_USERID,
+  SET_NAV_INDEX
 } from './mutation-types.js'
 
 export default {
@@ -13,5 +14,8 @@ export default {
   },
   [SET_CONTACT_USERID] (state, id) {
     state.contactUserId = id
+  },
+  [SET_NAV_INDEX] (state, index) {
+    state.navIndex = index
   }
 }

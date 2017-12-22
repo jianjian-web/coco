@@ -11,7 +11,8 @@ Vue.use(Vuex)
 
 const state = {
   userInfo: null,
-  contactUserId: ''  // 联系人，当前查看的联系人ID，用于获取详情
+  contactUserId: '',  // 联系人，当前查看的联系人ID，用于获取详情
+  navIndex: '/'
 }
 
 export default new Vuex.Store({

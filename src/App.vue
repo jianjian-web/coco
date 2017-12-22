@@ -72,16 +72,4 @@ p{
     -webkit-box-shadow: inset 0 0 6px rgba(139,139,139,0.3);
     background-color: #dbdee2;
 }
-.el-input__inner{ /* 将el-input的高度调小一下 */
-  height:30px;
-}
-.el-input__icon{
-  line-height: 30px;
-}
-.el-range-input{ /* 修复日期input不对其 */
-  height:auto!important;
-}
-.el-range-editor.el-input__inner{ /* 修复日期input不对其 */
-  padding:0 10px;
-}
 </style>

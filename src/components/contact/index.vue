@@ -6,11 +6,19 @@
         <el-input
           placeholder='请输入姓名/公司名称/手机号'
           suffix-icon='el-icon-search'
-          v-model='input2'>
+          v-model='searchValue'
+          @change='handleSearchChange'
+          >
         </el-input>
       </el-col>
       <el-col :span='4' class='row-item'>
-        <el-select v-model='searchTag' placeholder='标签' style='width:100%'>
+        <el-select 
+        v-model='searchTags' 
+        placeholder='标签' 
+        style='width:100%'
+        @change="handleTagsChange"
+        multiple
+        >
           <el-option
             v-for='item in tagsOption'
             :key='item'
@@ -20,7 +28,7 @@
         </el-select>
       </el-col>
       <el-col :span='4' class='row-item'>
-        <el-select v-model='value2' placeholder='所属活动分组' style='width:100%'>
+        <el-select v-model='activeGroup' placeholder='所属活动分组' style='width:100%'>
           <el-option
             v-for='item in tagsOption'
             :key='item'
@@ -41,7 +49,12 @@
       <el-button type='danger' size='medium' @click='$_deleteMore("contact", selections)' :disabled="selections.length == 0">删除</el-button>
     </div>
     <div class='marginTop tip'>
-      <span class='el-icon-info'></span>  已选择<span v-text='selections.length' style='display:inline-block;width:20px;text-align:center'></span>项
+      <div>
+        <span class='el-icon-info'></span>  已选择<span v-text='selections.length' style='display:inline-block;width:20px;text-align:center'></span>项
+      </div>
+      <div class='tagsList'>
+        <el-tag size="small" type="info" closable @close="handleDeleteTag(item)" v-for='(item,index) in tagsOption' :key='index' style='margin-right:10px'>{{item}}</el-tag>
+      </div>
     </div>
     <div class='tableWrapper marginTop'>
       <el-table
@@ -147,7 +160,6 @@
 import {mapMutations} from 'vuex'
 import {SET_CONTACT_USERID} from '../../store/mutation-types'
 import dialogEdit from './DialogEdit'
-// import dialogImport from './DialogImport'
 import dialogImport from '../common/CoUpload'
 import dialogTags from './DialogAddTag'
 import curd from '../../mixin/curd'
@@ -156,11 +168,12 @@ export default {
   mixins: [curd],
   data () {
     return {
-      searchTag: '',
-      value2: '',
-      input2: '',
-      tagsOption: [],
-      contactData: [],
+      searchTags: [], // 标签搜索关键词
+      searchValue: '', // 搜索 姓名/公司名称/手机号的关键词
+      activeGroup: '', // 搜索分组的关键词
+      allSearchData: {}, // 所有的搜索条件 用这个去后端请求数据
+      tagsOption: [],  // 标签选项
+      contactData: [],  // table数据
       currentPage: 1,
       pageSize: 10,
       total: 0,
@@ -170,7 +183,7 @@ export default {
       dialogType: 'edit', // 用于dialog区分是编辑还是添加
       showImport: false,
       showTags: false,
-      selections: []
+      selections: [] // 勾选项
     }
   },
   created () {
@@ -189,8 +202,21 @@ export default {
         this.tagsOption = res.data.data
       }).catch()
     },
-    refreshPage () {
-      this.$http.get(`/contact/${this.currentPage}/${this.pageSize}`).then(res => {
+    handleDeleteTag (tag) { // 删除一个tag
+      this.$http.patch('/contact/tags/clear', {
+        params: {tags: tag}
+      }).then(res => {
+        console.dir(res)
+        this.handleGetTags()
+        this.refreshPage()
+      }).catch(err => {
+        console.dir(err)
+      })
+    },
+    refreshPage (searchData) {
+      this.$http.get(`/contact/${this.currentPage}/${this.pageSize}`, {
+        params: {params: searchData || null}
+      }).then(res => {
         this.total = res.data.totalCount
         this.contactData = res.data.data
       }).catch(err => {
@@ -240,6 +266,17 @@ export default {
         console.log('打标签出错')
         console.dir(err)
       })
+    },
+    handleSearchChange (v) {
+      this.allSearchData.name = v
+      this.allSearchData.telphone = v
+      this.allSearchData.company = v
+      this.refreshPage(this.allSearchData)
+    },
+    handleTagsChange (v) {
+      this.allSearchData.tagList = v
+      this.refreshPage(this.allSearchData)
+      console.dir(this.allSearchData)
     }
   }
 }
@@ -260,6 +297,9 @@ export default {
     color:#666;
   }
   .tip{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     background:#E6F3FC;
     padding:10px;
     border-radius: 5px;
@@ -270,6 +310,9 @@ export default {
     }
     span:nth-child(2){
       color:#108EE9;
+    }
+    .tagsList{
+      margin-left:20px
     }
   }
   .tableWrapper{

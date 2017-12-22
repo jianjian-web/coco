@@ -1,17 +1,18 @@
 <template>
   <el-menu 
-        :default-openeds="['1']"
+        :default-active="navIndex"
         background-color="#001529"
         text-color="#fff"
         class='aside-menu'
         :router='true'
         :collapse="isOpen"
+        @select='handleSelect'
         >
           <el-menu-item index="/">
             <i class="el-icon-menu"></i>
             <span slot="title">我的活动</span>
           </el-menu-item>
-          <el-menu-item index="/contact">
+          <el-menu-item index="contact">
             <i class="el-icon-menu"></i>
             <span slot="title">联系人</span>
           </el-menu-item>
@@ -35,10 +36,14 @@
 </template>
 
 <script>
+  import {mapMutations, mapState} from 'vuex'
+  import {SET_NAV_INDEX} from '../../store/mutation-types'
   export default{
     name: 'Nav',
     data () {
-      return {}
+      return {
+        currentIndex: '/'
+      }
     },
     props: {
       isOpen: {
@@ -46,12 +51,23 @@
         default: false
       }
     },
+    computed: {
+      ...mapState([
+        'navIndex'
+      ])
+    },
+    methods: {
+      ...mapMutations([
+        SET_NAV_INDEX
+      ]),
+      handleSelect (v) {
+        this[SET_NAV_INDEX](v)
+      }
+    },
     watch: {
       isOpen (v) {
         console.log(v)
       }
-    },
-    methods: {
     }
   }
 </script>
