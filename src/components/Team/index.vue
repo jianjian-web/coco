@@ -6,11 +6,14 @@
         <el-input
           placeholder="请输入姓名/公司名称/手机号"
           suffix-icon="el-icon-search"
-          v-model="input2">
+          v-model='searchValue'
+          @change='handleSearchChange'
+          :clearable='true'
+          >
         </el-input>
       </el-col>
       <el-col :span="4" class='row-item'>
-        <el-select v-model="status" placeholder="状态" style='width:100%' @change='handleStatusChange'>
+        <el-select :clearable='true' v-model="status" placeholder="状态" style='width:100%' @change='handleStatusChange'>
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -103,8 +106,7 @@ export default {
   data () {
     return {
       status: generalStatus.yes,
-      value2: '',
-      input2: '',
+      searchValue: '',
       options: generalOptions('启用', '禁用'),
       currentPage: 1,
       total: 0,
@@ -114,7 +116,8 @@ export default {
       showEditDialog: false,
       editData: {}, // 点击编辑后获取的当前行的数据，传给dialog
       shwoAddDialog: false,
-      showImport: false
+      showImport: false,
+      allSearchData: {}
     }
   },
   created () {
@@ -124,10 +127,11 @@ export default {
     dialogEdit, dialogAdd, dialogImport
   },
   methods: {
-    refreshPage (isValid) {
+    refreshPage (isValid, searchData) {
+      if (!searchData) searchData = {}
       this.$http.get(`/member/${this.currentPage}/${this.pageSize}`, {
         params: {
-          params: {isValid: isValid || generalStatus.yes}
+          params: {isValid: isValid || generalStatus.yes, nickname: searchData.nickname}
         }
       }).then(res => {
         this.total = res.data.totalCount
@@ -166,7 +170,13 @@ export default {
       }
     },
     handleStatusChange (v) {
-      this.refreshPage(this.status)
+      this.refreshPage(this.status, this.allSearchData)
+    },
+    handleSearchChange (v) {
+      this.allSearchData.nickname = v
+      this.allSearchData.phone = v
+      console.dir(this.allSearchData)
+      this.refreshPage(this.status, this.allSearchData)
     }
   }
 }
