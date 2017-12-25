@@ -8,6 +8,7 @@ const Contact = () => import('@/components/contact/')
 const ContactDetails = () => import('@/components/contact/ContactDetails')
 const Team = () => import('@/components/Team/')
 const Message = () => import('@/components/Message/')
+const Record = () => import('@/components/Record')
 
 Vue.use(Router)
 
@@ -48,6 +49,11 @@ export default new Router({
       path: '/contact/details',
       name: 'contactDetails',
       component: ContactDetails
+    },
+    { // 通话记录
+      path: '/record',
+      name: 'Record',
+      component: Record
     },
     {
       path: '/team',

@@ -7,6 +7,9 @@
       <span class='btn' :class='{"el-icon-caret-right": isPlay, "el-icon-remove-outline": !isPlay}' @click='isPlay = !isPlay'></span>
       <el-slider v-model="progress" class='slide' :format-tooltip="formatTooltip" @change='handleProgressChange'></el-slider>
       <span v-text='totleTime'></span>
+      <el-tooltip class="item" effect="dark" content="转换为文字" placement="top">
+        <span class='el-icon-refresh transform' @click='handleClickTransform'></span>
+      </el-tooltip>
     </div>
   </div>
 </template>
@@ -60,6 +63,9 @@ export default{
     handleProgressChange (v) {
       // console.log(v)
       this.audioDom.currentTime = parseInt(this.duration * v / 100)
+    },
+    handleClickTransform () {
+      this.$emit('transform')
     }
   },
   watch: {
@@ -84,9 +90,16 @@ export default{
     justify-content: center;
     align-items: center;
     .slide{
-      width:60%;
+      width:50%;
       min-width:100px;
       margin:0 20px;
+    }
+    .transform{
+      margin-left:5px;
+      cursor: pointer;
+      &:hover{
+        color:#409EFF;
+      }
     }
   }
 }

@@ -18,7 +18,7 @@
 							<span class="login-title" :class="{active: wantLogin === 2}" @click="formChange(2)">注册</span>
 						</div>
 						<LoginForm @formChange ="formChange" v-if="wantLogin === 1"/>
-						<RegistForm v-if="wantLogin === 2"/>
+						<RegistForm v-if="wantLogin === 2" @success='wantLogin = 1'/>
 					    <!--<div class="to-regist">
 					    	<span class="regist-text">没有账号登陆？<router-link to="regist">现在注册！</router-link></span>
 					    </div>-->

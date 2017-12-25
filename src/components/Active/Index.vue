@@ -79,6 +79,11 @@ export default {
   },
   components: {
     cardDo, cardDone
+  },
+  created () {
+    this.$http.get('/user/current').then(res => {
+      console.dir(res)
+    })
   }
 }
 </script>

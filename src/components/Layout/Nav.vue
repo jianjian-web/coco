@@ -12,11 +12,15 @@
             <i class="el-icon-menu"></i>
             <span slot="title">我的活动</span>
           </el-menu-item>
-          <el-menu-item index="contact">
+          <el-menu-item index="/record">
+            <i class="el-icon-menu"></i>
+            <span slot="title">通话记录</span>
+          </el-menu-item>
+          <el-menu-item index="/contact">
             <i class="el-icon-menu"></i>
             <span slot="title">联系人</span>
           </el-menu-item>
-          <el-menu-item index="team">
+          <el-menu-item index="/team">
             <i class="el-icon-menu"></i>
             <span slot="title">我的团队</span>
           </el-menu-item>
@@ -28,10 +32,13 @@
               <el-menu-item index="/test1">充值记录</el-menu-item>
               <el-menu-item index="/test2">消费记录</el-menu-item>
           </el-submenu>
-           <el-menu-item index="message">
-            <i class="el-icon-menu"></i>
-            <span slot="title">设置</span>
-          </el-menu-item>
+          <el-submenu index="5">
+            <template slot="title">
+              <i class="el-icon-setting"></i>
+              <span slot="title">设置</span>
+            </template>
+              <el-menu-item index="/test11">ECP设置</el-menu-item>
+          </el-submenu>
         </el-menu>
 </template>
 
