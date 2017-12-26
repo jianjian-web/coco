@@ -65,7 +65,9 @@
         style='width: 100%'
         max-height='450'
         @selection-change='handleSelectionChange'
+        @cell-click='handleCellClick'
         >
+        <!-- @row-click='handleLook' -->
         <el-table-column
           type='selection'
           width='55'
@@ -78,6 +80,7 @@
           label='姓名'
           align='center'
           width='120'
+          class-name='cursor'
           >
         </el-table-column>
         <el-table-column
@@ -123,9 +126,9 @@
           align='center'
           >
           <template slot-scope='scope'>
-            <el-button type='text' size='small' @click='handleLook(scope.row)'>查看</el-button>
-            <el-button type='text' size='small' @click='handleEdit(scope.row)'>编辑</el-button>
-            <el-button type='text' size='small' @click='$_deleteOne("contact",scope.row.id)'>删除</el-button>
+            <el-button type='text' size='small' @click.stop='handleLook(scope.row)'>查看</el-button>
+            <el-button type='text' size='small' @click.stop='handleEdit(scope.row)'>编辑</el-button>
+            <el-button type='text' size='small' @click.stop='$_deleteOne("contact",scope.row.id)'>删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -173,7 +176,8 @@ export default {
       searchTags: [], // 标签搜索关键词
       searchValue: '', // 搜索 姓名/公司名称/手机号的关键词
       activeGroup: '', // 搜索分组的关键词
-      allSearchData: {}, // 所有的搜索条件 用这个去后端请求数据
+      allSearchData: {// 所有的搜索条件 用这个去后端请求数据
+      },
       tagsOption: [],  // 标签选项
       contactData: [],  // table数据
       currentPage: 1,
@@ -190,7 +194,6 @@ export default {
   },
   created () {
     this.refreshPage()
-    this.handleGetTags()
   },
   components: {
     dialogEdit, dialogImport, dialogTags
@@ -209,13 +212,13 @@ export default {
         params: {tags: tag}
       }).then(res => {
         console.dir(res)
-        this.handleGetTags()
         this.refreshPage()
       }).catch(err => {
         console.dir(err)
       })
     },
     refreshPage (searchData) {
+      this.handleGetTags()
       this.$http.get(`/contact/${this.currentPage}/${this.pageSize}`, {
         params: {params: searchData || null}
       }).then(res => {
@@ -283,6 +286,11 @@ export default {
     handleTagClick (tag) {
       this.allSearchData.tagList = [tag]
       this.refreshPage(this.allSearchData)
+    },
+    handleCellClick (row, column, cell, event) {
+      if (column.property === 'name') {
+        this.handleLook(row)
+      }
     }
   }
 }

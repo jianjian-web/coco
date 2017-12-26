@@ -2,15 +2,93 @@
   <div class='coTransfer'>
     <div class='source'>
       <p>
-        联系人列表
+        呼叫人列表
       </p>
-      <el-input v-model='sourceSearch' placeholder="请输入姓名" class='search' suffix-icon="el-icon-search"></el-input>
+      <div class='searchWrapper'>
+        <el-input v-model='sourceSearch' placeholder="请输入姓名" class='search' suffix-icon="el-icon-search"></el-input>
+        <el-select collapse-tags v-model="sourceSelectValue" multiple placeholder="标签" class='search select'>
+          <el-option
+            v-for="item in tagOptions"
+            :key="item"
+            :label="item"
+            :value="item">
+          </el-option>
+        </el-select>
+      </div>
+      <p>共搜索到22条数据</p>
       <el-table
         :data="sourceData"
         :show-header='false'
         style="width: 100%"
         height='350'
         @selection-change="handleSelectionChange"
+        :row-class-name='handleRowClass'
+        >
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-table :data='props.row.children' :show-header='false'>
+              <el-table-column
+                prop="name"
+                label="姓名"
+                >
+              </el-table-column>
+              <el-table-column
+                prop="phone"
+                label="电话"
+                >
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                width="40">
+                <template slot-scope="scope">
+                  <span class='el-icon-close cursor'></span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column
+          type="selection"
+          width="30">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          >
+        </el-table-column>
+        <el-table-column
+          align='right'
+          >
+          <template slot-scope="scope">
+            <!-- 已选择{{scope.row.children && scope.row.children.length}}人 -->
+            <span v-if='(scope.row.children && scope.row.children.length)'>已选择{{scope.row.children.length}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class='operation'>
+      <el-button class='right el-icon-d-arrow-left'></el-button>
+    </div>
+    <div class='target'>
+      <p>
+        联系人列表
+      </p>
+      <div class='searchWrapper'>
+        <el-input v-model='sourceSearch' placeholder="请输入姓名" class='search' suffix-icon="el-icon-search"></el-input>
+        <el-select collapse-tags v-model="sourceSelectValue" multiple placeholder="标签" class='search select'>
+          <el-option
+            v-for="item in tagOptions"
+            :key="item"
+            :label="item"
+            :value="item">
+          </el-option>
+        </el-select>
+      </div>
+      <p>共搜索到22条数据</p>
+      <el-table
+        :data="targetData"
+        :show-header='false'
+        style="width: 100%"
+        height='350'
         >
         <el-table-column
           type="selection"
@@ -18,31 +96,19 @@
         </el-table-column>
         <el-table-column
           prop="name"
-          label="姓名"
-          >
+          width='70'
+          > 
         </el-table-column>
         <el-table-column
           prop="phone"
-          label="电话"
-          align='right'
-          >
+          > 
+        </el-table-column>
+        <el-table-column
+          prop="tags"
+          width='100'
+          > 
         </el-table-column>
       </el-table>
-    </div>
-    <div class='operation'>
-      <el-button class='right'>随机</el-button>
-    </div>
-    <div class='target'>
-      <p>
-        呼叫人列表
-      </p>
-      <el-input v-model='targetSearch' placeholder="请输入姓名" class='search' suffix-icon="el-icon-search"></el-input>
-      <el-tree
-        :data="targetData"
-        show-checkbox
-        node-key="id"
-        >
-      </el-tree>
     </div>
   </div>
 </template>
@@ -52,84 +118,65 @@ export default{
   name: 'coTransfer',
   data () {
     return {
+      sourceSelectValue: [],
+      tagOptions: ['标签1', '标签2'],
       sourceSearch: '',
-      sourceData: [
+      sourceData: [  // 呼叫人数据
         {
           name: '花花1',
-          phone: '18362390866'
+          children: [
+            {
+              name: '花花11',
+              phone: '18362390866'
+            },
+            {
+              name: '花花111',
+              phone: '18362390866'
+            }
+          ]
         },
         {
-          name: '花花2',
-          phone: '18362390866'
-        },
-        {
-          name: '花花3',
-          phone: '18362390866'
-        },
-        {
-          name: '花花4',
-          phone: '18362390866'
-        },
-        {
-          name: '花花5',
-          phone: '18362390866'
-        },
-        {
-          name: '花花6',
-          phone: '18362390866'
-        },
-        {
-          name: '花花7',
-          phone: '18362390866'
-        },
-        {
-          name: '花花8',
-          phone: '18362390866'
-        },
-        {
-          name: '花花9',
-          phone: '18362390866'
+          name: '花花2'
         }
       ],
-      sourceSelect: [], // 左侧勾选的数据
       targetSearch: '',
-      targetData: [
+      targetData: [  // 联系人数据
         {
-          label: '张三',
-          children: [
-            {
-              label: '二级 1-1'
-            },
-            {
-              label: '二级 1-2'
-            }
-          ]
+          name: '张三三',
+          phone: '18362380904',
+          tags: ['标签1', '标签2'],
+          group: ''
         },
         {
-          label: '李四',
-          children: [
-            {
-              label: '二级 1-1'
-            },
-            {
-              label: '二级 1-2'
-            }
-          ]
+          name: '张三1',
+          phone: '18362380904',
+          tags: ['标签1', '标签2'],
+          group: ''
         }
       ]
     }
   },
+  mounted () {
+  },
   methods: {
     handleSelectionChange (v) {
-      this.sourceSelect = v
+      // this.sourceSelect = v
+    },
+    handleRowClass ({ row }) {
+      const cls = 'i-table-column'
+      if (!row.children) {
+        return `${cls} hiddenExpand`
+      }
+      return cls
     }
   }
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less'>
 .coTransfer{
-  height:100%;
+  // height:100%;
+  height:469px;
   display: flex;
   .operation{
     width:10%;
@@ -143,15 +190,41 @@ export default{
       margin-left:0;
     }
   }
+  .searchWrapper{
+    display: flex;
+    margin-bottom:10px;
+    .search{
+      margin-right:10px;
+      flex:1.5;
+    }
+    .select{
+      flex:2;
+    }
+  }
   .source,.target{
     border:1px solid #eaeaea;
-    width:40%;
+    width:45%;
     height:100%;
     padding:10px;
     color:#666;
     .search{
       margin-top:20px;
-      height:30px;
+    }
+  }
+
+  .el-table__row{
+    &>td{
+      padding:10px 0;
+    }
+  }
+  .el-table__expanded-cell[class*=cell]{
+    padding:0 0 0 50px;
+  }
+  .hiddenExpand {
+    & > .el-table__expand-column {
+      & > .cell {
+        height: 0;
+      }
     }
   }
 }

@@ -28,7 +28,9 @@
       <span>共搜索到 22 条数据</span>
     </div>
     <div class='marginTop'>
-      <el-button type='primary' size="medium" @click='showImport = true'>批量导入</el-button>
+      <el-tooltip class="item" effect="dark" content="导入联系人默认密码为111111" placement="top">
+        <el-button type='primary' size="medium" @click='showImport = true'>批量导入</el-button>
+      </el-tooltip>
       <el-button size="medium" @click='shwoAddDialog = true'>添加人员</el-button>
       <el-button v-if='status === "YES"' :type='status === "YES" ? "danger" : "success"' size='medium' @click='$_deleteMore("member", selections)' :disabled="selections.length == 0">{{status === 'YES' ? '禁用' : '启用'}}</el-button>
     </div>

@@ -48,6 +48,9 @@ body,html{
 .rt{
   float:right;
 }
+.cursor{
+  cursor: pointer;
+}
 p{
   padding:0;
   margin:0;

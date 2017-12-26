@@ -1,5 +1,5 @@
 <template>
-  <div class='DetailsContacts'>
+  <div class='detailsCall'>
     <div class='titleContainer'>
      <el-row>
       <el-col :span="4" class='row-item'>
@@ -49,59 +49,37 @@
       >
       <el-table-column
         prop="name"
-        label="联系人"
-        align='center'
-        >
-      </el-table-column>
-      <el-table-column
-        prop="company"
-        label="公司名称"
+        label="呼叫人"
         align='center'
         >
       </el-table-column>
       <el-table-column
         prop="phone"
-        label="联系方式"
+        label="呼叫人数"
         align='center'
         >
-      </el-table-column>
-      <el-table-column
-        prop="callStatus"
-        label="呼叫状态"
-        align='center'
-        >
-      </el-table-column>
-      <el-table-column
-        label="通话详情"
-        align='center'
-        width='250'
-        >
-        <template slot-scope="scope">
-          <!-- <span v-text='scope.row.callVoice'></span> -->
-          <co-audio></co-audio>
-        </template>
       </el-table-column>
       <el-table-column
         prop="callResult"
-        label="呼叫结果"
+        label="呼叫次数"
         align='center'
         >
       </el-table-column>
       <el-table-column
-        prop="people"
-        label="呼叫人"
-        align='center'
-        >
+      prop="callStatus"
+      label="接通次数"
+      align='center'
+      >
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-/* 联系人 */
-import coAudio from '../common/voice'
+/* 呼叫人 */
+// import coAudio from '../common/voice'
 export default{
-  name: 'DetailsContacts',
+  name: 'detailsCall',
   data () {
     return {
       search: '',
@@ -139,15 +117,12 @@ export default{
           people: '小某'
         }]
     }
-  },
-  components: {
-    coAudio
   }
 }
 </script>
 
 <style lang='less' scoped>
-.DetailsContacts{
+.detailsCall{
   .titleContainer{
     .row-item{
       margin-right:10px;

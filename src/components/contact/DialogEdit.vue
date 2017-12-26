@@ -47,9 +47,11 @@
                   :label="item"
                   :value="item">
                 </el-option>
-                <!-- <el-option :value="addTag" @click.stop='handleAddTags'> -->
-                  <p style='text-align:center;cursor:pointer' @click='handleAddTags'>新增标签</p>
-                <!-- </el-option> -->
+                <el-input type="text" v-model='tagName' v-if='showInput' @change='handleInputChange'/>
+                <el-option style='text-align:center;cursor:pointer' value='false' v-if='!tags.length'>
+                  <p @click.stop='handleAddTags' style='margin:0 -20px;'>新增标签<span class='el-icon-edit'></span></p>
+                </el-option>
+                <p style='text-align:center;cursor:pointer;' @click.stop='handleAddTags' v-else>新增标签<span class='el-icon-edit'></span></p>
               </el-select>
             </el-form-item>
           </el-col>
@@ -70,6 +72,8 @@ export default{
   mixins: [curd],
   data () {
     return {
+      showInput: false,
+      tagName: '',
       isVisible: false,
       formData: {},
       addTag: '',
@@ -99,8 +103,14 @@ export default{
       })
     },
     handleAddTags (e) {
-      // e.stopPropagation()
       console.dir('addTags')
+      this.showInput = true
+    },
+    handleInputChange (v) {
+      console.log('change')
+      this.formData.tagList.push(v)
+      this.showInput = false
+      this.tagName = ''
     }
   },
   props: {

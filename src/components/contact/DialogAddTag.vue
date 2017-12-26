@@ -20,7 +20,11 @@
         :label="item"
         :value="item">
       </el-option>
-        <p style='text-align:center;cursor:pointer'>新增标签</p>
+      <el-input type="text" v-model='tagName' v-if='showInput' @change='handleInputChange'/>
+      <el-option style='text-align:center;cursor:pointer' value='false' v-if='!tags.length'>
+        <p @click.stop='handleAddTags' style='margin:0 -20px;'>新增标签<span class='el-icon-edit'></span></p>
+      </el-option>
+      <p style='text-align:center;cursor:pointer;' @click.stop='handleAddTags' v-else>新增标签<span class='el-icon-edit'></span></p>
     </el-select>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -35,6 +39,8 @@ export default{
   name: 'dialogEdit',
   data () {
     return {
+      showInput: false,
+      tagName: '',
       isVisible: false,
       tagsData: []
     }
@@ -47,6 +53,16 @@ export default{
       console.dir(this.tagsData)
       this.$emit('tags', this.tagsData)
       this.handleClose()
+    },
+    handleAddTags (e) {
+      console.dir('addTags')
+      this.showInput = true
+    },
+    handleInputChange (v) {
+      console.log('change')
+      this.tagsData.push(v)
+      this.showInput = false
+      this.tagName = ''
     }
   },
   props: {
