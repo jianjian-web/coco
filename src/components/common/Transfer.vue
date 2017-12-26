@@ -21,8 +21,9 @@
         :show-header='false'
         style="width: 100%"
         height='350'
-        @selection-change="handleSelectionChange"
         :row-class-name='handleRowClass'
+        highlight-current-row
+        @current-change='handleSelectRow'
         >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -47,10 +48,10 @@
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           type="selection"
           width="30">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="name"
           >
@@ -66,7 +67,7 @@
       </el-table>
     </div>
     <div class='operation'>
-      <el-button class='right el-icon-d-arrow-left'></el-button>
+      <el-button class='right el-icon-d-arrow-left' @click='handleTansfer'></el-button>
     </div>
     <div class='target'>
       <p>
@@ -89,10 +90,13 @@
         :show-header='false'
         style="width: 100%"
         height='350'
+        @selection-change="handleSelectionChange">
         >
         <el-table-column
           type="selection"
-          width="30">
+          width="30"
+          :selectable='unChecked'
+          >
         </el-table-column>
         <el-table-column
           prop="name"
@@ -118,6 +122,7 @@ export default{
   name: 'coTransfer',
   data () {
     return {
+      currentProple: '', // 当前选中的呼叫人
       sourceSelectValue: [],
       tagOptions: ['标签1', '标签2'],
       sourceSearch: '',
@@ -136,7 +141,8 @@ export default{
           ]
         },
         {
-          name: '花花2'
+          name: '花花2',
+          children: []
         }
       ],
       targetSearch: '',
@@ -153,14 +159,16 @@ export default{
           tags: ['标签1', '标签2'],
           group: ''
         }
-      ]
+      ],
+      selected: [] // 选中的联系人
     }
   },
   mounted () {
   },
   methods: {
     handleSelectionChange (v) {
-      // this.sourceSelect = v
+      this.selected = Object.assign([], v)
+      console.dir(this.selected)
     },
     handleRowClass ({ row }) {
       const cls = 'i-table-column'
@@ -168,6 +176,34 @@ export default{
         return `${cls} hiddenExpand`
       }
       return cls
+    },
+    handleSelectRow (row) { // 当选择了呼叫人
+      console.dir(row)
+      if (!row) return
+      this.currentProple = row.name
+    },
+    handleTansfer () {
+      const source = this.sourceData.map(item => {
+        if (item.name === this.currentProple) {
+          // item.children.push()
+          const obj = Object.assign({}, item)
+          obj.children = obj.children.concat(this.selected)
+          return obj
+        } else {
+          return item
+        }
+      })
+      this.sourceData = Object.assign([], source)
+      // const target = this.
+      // TODO: 用selected给联系人数据的group加呼叫人，让其出现不可选。
+    },
+    unChecked (row) {
+      console.dir(row)
+      if (row.group) {
+        return 0
+      } else {
+        return 1
+      }
     }
   }
 }
