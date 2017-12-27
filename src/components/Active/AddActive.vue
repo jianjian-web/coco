@@ -11,12 +11,17 @@
               <el-input v-model="form.name"></el-input>
             </el-form-item>
             <el-form-item label="活动性质">
-              <el-checkbox-group v-model="form.type" class='checkGroup'>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-              </el-checkbox-group>
+              <div>
+                <el-checkbox-group v-model="form.type" class='checkGroup'>
+                  <!-- <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+                  <el-checkbox label="地推活动" name="type"></el-checkbox>
+                  <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+                  <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox> -->
+                  <el-checkbox v-for='(item,index) in checkboxValue' :key='index' :label='item'></el-checkbox>
+                  <el-input v-model="addCheckboxValue" @change='handleAddChange' v-if='showInput' style='width:100px;' class='el-checkbox__label'></el-input>
+                  <p v-else class='checkbox-add el-checkbox__label el-icon-circle-plus-outline' @click='handleAdd'>添加</p>
+                </el-checkbox-group>
+              </div>
             </el-form-item>
           </el-form>
         </div>
@@ -45,7 +50,12 @@ export default {
   name: 'addActive',
   data () {
     return {
-      form: {}
+      form: {
+        type: []
+      },
+      checkboxValue: ['test1', 'test2', 'test3'],
+      showInput: false,
+      addCheckboxValue: ''
     }
   },
   mounted () {
@@ -55,11 +65,19 @@ export default {
     coTransfer
   },
   methods: {
+    handleAdd () {
+      this.showInput = true
+    },
+    handleAddChange () {
+      this.showInput = false
+      this.checkboxValue.push(this.addCheckboxValue)
+      this.addCheckboxValue = ''
+    }
   }
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less'>
 .addActive{
   height: calc(~"100% - 20px");
   .activeContainer{
@@ -99,7 +117,18 @@ export default {
       }
       .content{
         flex:3;
-        .checkGroup{}
+        .checkGroup{
+          display: flex;
+          flex-wrap: wrap;
+          .el-checkbox{
+            margin-left:0!important;
+            margin-right:30px!important;
+          }
+          .checkbox-add{
+            line-height: 40px;
+            cursor: pointer;
+          }
+        }
       }
     }
     .btnGroup{
