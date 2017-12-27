@@ -1,15 +1,15 @@
 <template>
   <div class='header'>
     <div class='rt'>
-      <span class='coco-lingdang'></span>
+      <!-- <span class='coco-lingdang'></span> -->
       <el-dropdown>
         <i class="coco-yonghu"></i>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人中心</el-dropdown-item>
-          <el-dropdown-item>退出登录</el-dropdown-item>
+          <!-- <el-dropdown-item>个人中心</el-dropdown-item> -->
+          <el-dropdown-item @click.native='handleLogout'>退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <span class='name'>admin</span>
+      <span class='name'>{{userInfo.nickname}}</span>
     </div>
     <div class='lf' @click='handleToggleNav'>
       <span class='coco-zhedie'></span>
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   name: 'coHeader',
   data () {
@@ -27,7 +28,19 @@ export default {
   methods: {
     handleToggleNav () {
       this.$emit('toggleNav')
+    },
+    handleLogout () {
+      this.$http.post('/logout').then(res => {
+        if (res) {
+          this.$router.push({ path: '/login' })
+        }
+      })
     }
+  },
+  computed: {
+    ...mapState([
+      'userInfo'
+    ])
   }
 }
 </script>

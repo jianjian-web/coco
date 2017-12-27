@@ -7,8 +7,11 @@ const Login = () => import('@/components/Login/Login.vue')
 const Contact = () => import('@/components/contact/')
 const ContactDetails = () => import('@/components/contact/ContactDetails')
 const Team = () => import('@/components/Team/')
-const Message = () => import('@/components/Message/')
 const Record = () => import('@/components/Record')
+const Recharge = () => import('@/components/Account/Recharge')
+const Shopping = () => import('@/components/Account/Shopping')
+const Ecp = () => import('@/components/Setting/Ecp')
+const PassWord = () => import('@/components/Setting/PassWord')
 
 Vue.use(Router)
 
@@ -60,10 +63,25 @@ export default new Router({
       name: 'Team',
       component: Team
     },
-    {
-      path: '/message',
-      name: 'Message',
-      component: Message
+    { // 充值记录
+      path: '/account/recharge',
+      name: 'Recharge',
+      component: Recharge
+    },
+    { // 消费记录
+      path: '/account/consumption',
+      name: 'Consumption',
+      component: Shopping
+    },
+    { // Ecp设置
+      path: '/setting/ecp',
+      name: 'Ecp',
+      component: Ecp
+    },
+    { // 修改密码
+      path: '/setting/password',
+      name: 'PassWord',
+      component: PassWord
     }
   ]
 })

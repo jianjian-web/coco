@@ -8,6 +8,7 @@
         :collapse="isOpen"
         @select='handleSelect'
         >
+          <p style='height:60px;background:#AABBCC;line-height:60px;text-align:center'>logo</p>
           <el-menu-item index="/">
             <i class="el-icon-menu"></i>
             <span slot="title">我的活动</span>
@@ -29,15 +30,16 @@
               <i class="el-icon-setting"></i>
               <span slot="title">我的账户</span>
             </template>
-              <el-menu-item index="/test1">充值记录</el-menu-item>
-              <el-menu-item index="/test2">消费记录</el-menu-item>
+              <el-menu-item index="/account/recharge">充值记录</el-menu-item>
+              <el-menu-item index="/account/consumption">消费记录</el-menu-item>
           </el-submenu>
           <el-submenu index="5">
             <template slot="title">
               <i class="el-icon-setting"></i>
               <span slot="title">设置</span>
             </template>
-              <el-menu-item index="/test11">ECP设置</el-menu-item>
+              <el-menu-item index="/setting/ecp">ECP设置</el-menu-item>
+              <el-menu-item index="/setting/password">修改密码</el-menu-item>
           </el-submenu>
         </el-menu>
 </template>
@@ -82,7 +84,8 @@
 <style lang='less' scoped>
   .aside-menu{
     height:100%;
-    overflow-x: visible;
-    overflow-y: auto;
+    &:not(.el-menu--collapse) {
+      width: 250px;
+    }
   }
 </style>

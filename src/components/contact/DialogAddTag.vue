@@ -6,7 +6,7 @@
     title='打标签'
     :close-on-click-modal='false'
     :before-close="handleClose">
-    <div class='main'>
+    <div class='tag-main'>
     <p>标签</p>
     <el-select
       v-model="tagsData"
@@ -91,7 +91,7 @@ export default{
       padding-bottom: 0;
     }
   }
-  .main{
+  .tag-main{
     padding: 0 20px;
     .download{
       color:#108EE9;

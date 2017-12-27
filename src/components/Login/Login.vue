@@ -4,7 +4,6 @@
 			<div class="rso-solgan fl">
 				<div class="rso-logo" style='top:-100px;' >
 					<router-link to="">
-						<!-- <img class="logo-img" src="../../assets/login/logo1.svg" alt="" style='margin-bottom:30px;'/> -->
 						<img class="logo-img" src="../../assets/login/logo.png" alt="" />
 					</router-link>
 				</div>
@@ -72,8 +71,7 @@ export default {
     height:0;
     border-width:15px 0 15px 15px;
     border-style:solid;
-    // border-color:transparent transparent transparent #bba2c5;/*透明 透明 透明 灰*/
-    border-color:transparent transparent transparent #fee6e4;/*透明 透明 透明 灰*/
+    border-color:transparent transparent transparent #fee6e4;
     margin:40px auto;
     position:absolute;
     margin: auto;

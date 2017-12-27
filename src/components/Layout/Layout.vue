@@ -4,11 +4,11 @@
       <!-- 侧边栏导航 -->
       <el-aside
        class='aside'
-       :width='!asideOpen?"250px":"64px"'
+       :width='!asideOpen?"250px":"65px"'
        >
-        <div class='logo'>
+        <!-- <div class='logo'>
           logo
-        </div>
+        </div> -->
         <co-Nav :isOpen='asideOpen'></co-Nav>
       </el-aside>
       <!-- 主体 -->
@@ -20,7 +20,7 @@
           <co-header @toggleNav='handleToggleNav'></co-header>
         </el-header>
 
-        <el-main class='main'>
+        <el-main class='layout-main'>
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -60,7 +60,7 @@ export default {
 }
 </script>
 
-<style scoped lang='less'>
+<style lang='less'>
 @headHeight: 60px;
 @footHeight: 50px;
 
@@ -69,24 +69,15 @@ export default {
   .layout-container{
     height:calc(~'100% - 50px');
     .aside{
-      // transition: all 0.35s linear;
+      transition: all 0.35s ease-out;
       height:100%;
-      // overflow: visible;
-      overflow-x: visible;
-      overflow-y: hidden;
-      .logo{
-        height:@headHeight;
-        line-height: @headHeight;
-        text-align: center;
-        background:#abc;
-        color:#fff;
-      }
+      overflow: visible;
     }
     .main-container{
       .header-container{
         padding:0;
       }
-      .main{
+      .layout-main{
         margin:20px;
         background:#fff;
         border-radius: 5px;
@@ -100,6 +91,16 @@ export default {
     line-height: @footHeight;
     text-align: center;
     background:#AABBCC;
+  }
+
+  ul.aside-menu{ // 调整子菜单缩进
+    &>li.el-submenu{
+      ul.el-menu{
+        .el-menu-item{
+          padding-left:60px!important;
+        }
+      }
+    }
   }
 }
 </style>

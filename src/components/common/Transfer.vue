@@ -21,6 +21,7 @@
         :show-header='false'
         style="width: 100%"
         height='350'
+        empty-text='尚未选择联系人'
         :row-class-name='handleRowClass'
         highlight-current-row
         @current-change='handleSelectRow'
@@ -42,7 +43,7 @@
                 label="操作"
                 width="40">
                 <template slot-scope="scope">
-                  <span class='el-icon-close cursor'></span>
+                  <span class='el-icon-close cursor' @click='handleDelete(scope.row, scope.$index)'></span>
                 </template>
               </el-table-column>
             </el-table>
@@ -67,7 +68,7 @@
       </el-table>
     </div>
     <div class='operation'>
-      <el-button class='right el-icon-d-arrow-left' @click='handleTansfer'></el-button>
+      <el-button class='right el-icon-d-arrow-left' @click='handleTansfer' :disabled='!currentProple || !selected.length'></el-button>
     </div>
     <div class='target'>
       <p>
@@ -130,14 +131,6 @@ export default{
         {
           name: '花花1',
           children: [
-            {
-              name: '花花11',
-              phone: '18362390866'
-            },
-            {
-              name: '花花111',
-              phone: '18362390866'
-            }
           ]
         },
         {
@@ -160,7 +153,8 @@ export default{
           group: ''
         }
       ],
-      selected: [] // 选中的联系人
+      selected: [], // 选中的联系人
+      remove: '' // 要移除的联系人
     }
   },
   mounted () {
@@ -168,7 +162,7 @@ export default{
   methods: {
     handleSelectionChange (v) {
       this.selected = Object.assign([], v)
-      console.dir(this.selected)
+      // console.dir(this.selected)
     },
     handleRowClass ({ row }) {
       const cls = 'i-table-column'
@@ -178,32 +172,73 @@ export default{
       return cls
     },
     handleSelectRow (row) { // 当选择了呼叫人
-      console.dir(row)
       if (!row) return
       this.currentProple = row.name
+    },
+    handleIsSelected (name) { // 当前的选项是否是被勾选的选项
+      let bool = false
+      this.selected.forEach(item => {
+        if (item.name === name) {
+          bool = true
+        }
+      })
+      return bool
+    },
+    disableRow () { // 向被选中的联系人的group中添加呼叫人，使其变为禁用状态
+      const obj = this.targetData.map(item => {
+        if (this.handleIsSelected(item.name)) {
+          return Object.assign({}, item, {group: this.currentProple})
+        } else {
+          return item
+        }
+      })
+      this.targetData = Object.assign([], obj)
+    },
+    ableRow () { // 联系人从呼叫人中移除后，删除对应联系人的group，使其变为可选择状态
+      const obj = this.targetData.map(item => {
+        if (item.group === this.remove.group && this.remove.name === item.name) {
+          return Object.assign({}, item, {group: ''})
+        } else {
+          return item
+        }
+      })
+      this.targetData = Object.assign([], obj)
     },
     handleTansfer () {
       const source = this.sourceData.map(item => {
         if (item.name === this.currentProple) {
-          // item.children.push()
           const obj = Object.assign({}, item)
-          obj.children = obj.children.concat(this.selected)
+          obj.children = obj.children.concat(this.selected).map(item1 => {
+            return Object.assign({}, item1, {group: item.name})
+          })
           return obj
         } else {
           return item
         }
       })
+      this.disableRow()
       this.sourceData = Object.assign([], source)
-      // const target = this.
-      // TODO: 用selected给联系人数据的group加呼叫人，让其出现不可选。
+      this.selected = []
     },
     unChecked (row) {
-      console.dir(row)
+      // console.dir(row)
       if (row.group) {
         return 0
       } else {
         return 1
       }
+    },
+    handleDelete (v, index) { // 从呼叫人中移除联系人
+      this.remove = {group: v.group, name: v.name}
+      this.ableRow()
+      this.sourceData.map(item => {
+        if (item.name === v.group) {
+          item.children.splice(index, 1)
+          return item
+        } else {
+          return item
+        }
+      })
     }
   }
 }

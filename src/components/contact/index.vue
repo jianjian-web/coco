@@ -19,6 +19,7 @@
         style='width:100%'
         @change="handleTagsChange"
         multiple
+        collapse-tags
         :clearable='true'
         >
           <el-option
@@ -55,7 +56,16 @@
         <span class='el-icon-info'></span>  已选择<span v-text='selections.length' style='display:inline-block;width:20px;text-align:center'></span>项
       </div>
       <div class='tagsList'>
-        <el-tag @click.native='handleTagClick(item)' size="small" type="info" closable @close="handleDeleteTag(item)" v-for='(item,index) in tagsOption' :key='index' style='margin-right:10px'>{{item}}</el-tag>
+        <el-tag @click.native='handleTagClick(item)' 
+          size="small" 
+          type="info" 
+          closable 
+          @close="handleDeleteTag(item)" 
+          v-for='(item,index) in tagsOption' 
+          :key='index' style='margin-right:10px'
+        >
+          {{item}}
+        </el-tag>
       </div>
     </div>
     <div class='tableWrapper marginTop'>
@@ -281,11 +291,12 @@ export default {
     handleTagsChange (v) {
       this.allSearchData.tagList = v
       this.refreshPage(this.allSearchData)
-      console.dir(this.allSearchData)
     },
     handleTagClick (tag) {
-      this.allSearchData.tagList = [tag]
-      this.refreshPage(this.allSearchData)
+      if (this.searchTags.indexOf(tag) === -1) {
+        this.searchTags.push(tag)
+      }
+      this.handleTagsChange(this.searchTags)
     },
     handleCellClick (row, column, cell, event) {
       if (column.property === 'name') {
