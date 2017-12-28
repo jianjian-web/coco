@@ -33,7 +33,7 @@
       </el-col>
      </el-row>
     </div>
-    <p class='searchTotal'>共搜索到 22 条数据</p>
+    <p class='searchTotal'></p>
     <div class='active-main'>
       <el-button type='primary' style='margin-bottom:20px' @click='handleAddItem'>新建活动</el-button>
       <el-table

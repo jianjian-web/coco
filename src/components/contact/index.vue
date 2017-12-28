@@ -43,7 +43,7 @@
      </el-row>
     </div>
     <div class='total'>
-      <span>共搜索到 22 条数据</span>
+      <span></span>
     </div>
     <div class='marginTop'>
       <el-button type='primary' size='medium' @click='showImport = true'>批量导入</el-button>

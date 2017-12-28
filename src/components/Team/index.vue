@@ -25,7 +25,7 @@
     </el-row>
     </div>
     <div class='total'>
-      <span>共搜索到 22 条数据</span>
+      <span></span>
     </div>
     <div class='marginTop'>
       <el-tooltip class="item" effect="dark" content="导入联系人默认密码为111111" placement="top">

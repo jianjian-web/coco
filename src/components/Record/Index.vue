@@ -30,7 +30,7 @@
       </el-col>
      </el-row>
     </div>
-    <p class='searchTotal'>共搜索到 22 条数据</p>
+    <p class='searchTotal'></p>
     <el-table
       :data="tableData"
       style="width: 100%"
