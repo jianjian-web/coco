@@ -35,7 +35,7 @@ export default {
         console.dir(err)
       })
     },
-    $_addOne (url, data) {
+    $_addOne (url, data) { // 增
       this.$http.post(`/${url}`, {
         params: data
       }).then(res => {
@@ -45,6 +45,28 @@ export default {
       }).catch(err => {
         console.log('添加失败')
         console.dir(err)
+      })
+    },
+    $_query (url, current, pageSize, data) { // 查询分页
+      this.$http.get(`/${url}/${current}/${pageSize}`, {
+        params: {params: data}
+      }).then(res => {
+        this.tableData = []
+        this.total = res.data.totalCount
+        if (res.data.extras) {
+          const arr = res.data.extras.drafts.map(item => {
+            return Object.assign({}, item, {status: '草稿'})
+          })
+          this.tableData = this.tableData.concat(arr)
+          this.total += arr.length
+        }
+        if (res.data.data.length) {
+          const arr = res.data.data.map(item => {
+            return Object.assign({}, item, {status: '已发布'})
+          })
+          this.tableData = this.tableData.concat(arr)
+        }
+        console.dir(this.tableData)
       })
     }
   }

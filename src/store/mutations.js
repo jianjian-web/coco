@@ -2,7 +2,8 @@ import {
   USER_INFO,
   INIT_STATE,
   SET_CONTACT_USERID,
-  SET_NAV_INDEX
+  SET_NAV_INDEX,
+  SET_ACTIVE_DATA
 } from './mutation-types.js'
 
 export default {
@@ -17,5 +18,8 @@ export default {
   },
   [SET_NAV_INDEX] (state, index) {
     state.navIndex = index
+  },
+  [SET_ACTIVE_DATA] (state, rowData) {
+    state.activeRowData = rowData
   }
 }

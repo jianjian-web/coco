@@ -2,7 +2,7 @@
 
 let baseUrl = ''
 if (process.env.NODE_ENV === 'development') {
-  baseUrl = 'http://zhoujian.anavss.com'
+  baseUrl = 'http://call.anavss.com'
 } else if (process.env.NODE_ENV === 'production') {
   baseUrl = 'http://call.anavss.com'
 }

@@ -106,8 +106,11 @@
 <script>
 /* 联系人 */
 import coAudio from '../common/voice'
+import curd from '../../mixin/curd'
+
 export default{
   name: 'DetailsRecord',
+  mixins: [curd],
   data () {
     return {
       search: '',

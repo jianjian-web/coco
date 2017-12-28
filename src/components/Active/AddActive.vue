@@ -11,16 +11,10 @@
               <el-input v-model="form.name"></el-input>
             </el-form-item>
             <el-form-item label="活动性质">
-              <div>
-                <el-checkbox-group v-model="form.type" class='checkGroup'>
-                  <!-- <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                  <el-checkbox label="地推活动" name="type"></el-checkbox>
-                  <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                  <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox> -->
-                  <el-checkbox v-for='(item,index) in checkboxValue' :key='index' :label='item'></el-checkbox>
-                  <el-input v-model="addCheckboxValue" @change='handleAddChange' v-if='showInput' style='width:100px;' class='el-checkbox__label'></el-input>
-                  <p v-else class='checkbox-add el-checkbox__label el-icon-circle-plus-outline' @click='handleAdd'>添加</p>
-                </el-checkbox-group>
+              <div class='checkGroup'>
+                  <el-input type="textarea" :rows="2" placeholder="请输入，内容以换行隔开" v-model="textarea" @change='handleTextareaChange'></el-input>
+                  <!-- <el-input v-model="addCheckboxValue" @change='handleAddChange' v-if='showInput' style='width:100px;' class='el-checkbox__label'></el-input>
+                  <p v-else class='checkbox-add el-checkbox__label el-icon-circle-plus-outline' @click='handleAdd'>添加</p> -->
               </div>
             </el-form-item>
           </el-form>
@@ -31,11 +25,11 @@
           <span class='titleBg'> <i class='el-icon-document'></i> 人员信息 <i class='arrow'></i> </span>
         </div>
         <div class='content'>
-          <co-transfer></co-transfer>
-          <div class='btnGroup'>
+          <co-transfer @submit='handleSubmit'></co-transfer><!--穿梭框-->
+          <!-- <div class='btnGroup'>
             <el-button type="primary">保存为草稿</el-button>
             <el-button type="primary">发布</el-button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -43,35 +37,77 @@
 </template>
 
 <script>
-import coTransfer from '../common/Transfer'
-import _ from 'lodash'
+import coTransfer from './Transfer'
+// import _ from 'lodash'
+import {mapState, mapMutations} from 'vuex'
+import {SET_ACTIVE_DATA} from '../../store/mutation-types'
 
 export default {
   name: 'addActive',
   data () {
     return {
       form: {
-        type: []
       },
-      checkboxValue: ['test1', 'test2', 'test3'],
-      showInput: false,
-      addCheckboxValue: ''
+      textarea: ''
     }
   },
-  mounted () {
-    console.dir(_.groupBy)
+  created () {
+    // console.dir(this.activeRowData)
+    if (this.activeRowData) {
+      this.form = this.activeRowData
+      const ops = this.activeRowData.options.map(item => {
+        return item.label
+      })
+      this.textarea = ops.join('\n')
+    } else {
+      this.form = {
+        name: '',
+        options: [],
+        contacts: []
+      }
+    }
   },
   components: {
     coTransfer
   },
+  computed: {
+    ...mapState([
+      'activeRowData'
+    ])
+  },
   methods: {
-    handleAdd () {
-      this.showInput = true
+    ...mapMutations([
+      SET_ACTIVE_DATA
+    ]),
+    handleTextareaChange (v) {
+      const textArr = v.split('\n')
+      const arr = textArr.map((item, index) => {
+        return {label: item, value: index}
+      })
+      this.form.options = Object.assign([], arr)
     },
-    handleAddChange () {
-      this.showInput = false
-      this.checkboxValue.push(this.addCheckboxValue)
-      this.addCheckboxValue = ''
+    handleSubmit (v) { // 保存
+      this.form.contacts = Object.assign([], v.data)
+      if (v.type === 'save') {
+        console.log('保存')
+        console.dir(this.form)
+        this.$http.post('activity', {
+          params: this.form
+        }).then(res => {
+          if (res) {
+            this.$router.push({path: '/active'})
+          }
+        })
+      } else {
+        // console.log('草稿')
+        this.$http.post('activity-draft', {
+          params: this.form
+        }).then(res => {
+          if (res) {
+            this.$router.push({path: '/active'})
+          }
+        })
+      }
     }
   }
 }

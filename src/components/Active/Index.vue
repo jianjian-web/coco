@@ -50,13 +50,13 @@
           >
         </el-table-column>
         <el-table-column
-          prop="number"
+          prop="sumContact"
           label="联系人数"
           align='center'
           >
         </el-table-column>
         <el-table-column
-          prop="callNumber"
+          prop="sumCaller"
           label="呼叫人数"
           align='center'
           >
@@ -80,17 +80,19 @@
           align='center'>
           <template slot-scope="scope">
             <!-- <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
-            <el-button type="text" size="small" @click.stop='handleEdit'>编辑</el-button>
+            <el-button :disabled="scope.row.status === '已发布'" type="text" size="small" @click.stop='handleEdit(scope.row)'>编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class='pagination'>
         <el-pagination
-          :current-page="1"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="120">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -110,9 +112,13 @@
 <script>
 import cardDo from './CardDo'
 import cardDone from './CardDone'
+import curd from '../../mixin/curd'
+import {mapMutations} from 'vuex'
+import {SET_ACTIVE_DATA} from '../../store/mutation-types'
 
 export default {
   name: 'activeIndex',
+  mixins: [curd],
   data () {
     return {
       input2: '',
@@ -125,34 +131,51 @@ export default {
         label: '已发布'
       }],
       dateValue: '',
-      tableData: [{
-        name: '客户满意度调查',
-        number: '120人',
-        callNumber: '3人',
-        status: '草稿',
-        creatTime: '2017-12-26'
-      }]
+      tableData: [],
+      currentPage: 1,
+      total: 0,
+      pageSize: 10
     }
   },
   methods: {
+    ...mapMutations([
+      SET_ACTIVE_DATA
+    ]),
     handleAddItem () {
+      this[SET_ACTIVE_DATA](null)
       this.$router.push({path: '/addActive'})
     },
     handleLookDetails (row) {
-      console.dir(row)
+      if (row.status === '草稿') {
+        return
+      }
       this.$router.push({path: '/active/details'})
     },
-    handleEdit () {
-      this.handleAddItem()
+    handleEdit (row) {
+      console.dir(row)
+      this[SET_ACTIVE_DATA](row)
+      this.$router.push({path: '/addActive'})
+    },
+    refreshPage (data) {
+      this.$_query('activity', this.currentPage, this.pageSize, data)
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.refreshPage()
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.refreshPage()
     }
   },
   components: {
     cardDo, cardDone
   },
   created () {
-    this.$http.get('/user/current').then(res => {
-      console.dir(res)
-    })
+    // this.$http.get('/user/current').then(res => {
+    //   console.dir(res)
+    // })
+    this.refreshPage()
   }
 }
 </script>

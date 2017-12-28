@@ -12,7 +12,8 @@ Vue.use(Vuex)
 const state = {
   userInfo: null,
   contactUserId: '',  // 联系人，当前查看的联系人ID，用于获取详情
-  navIndex: '/'
+  navIndex: '/',
+  activeRowData: null // 我的活动首页点击编辑后的rowData
 }
 
 export default new Vuex.Store({
