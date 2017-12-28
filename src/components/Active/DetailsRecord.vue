@@ -104,9 +104,10 @@
 </template>
 
 <script>
-/* 联系人 */
+/* 通话记录 */
 import coAudio from '../common/voice'
 import curd from '../../mixin/curd'
+import {mapState} from 'vuex'
 
 export default{
   name: 'DetailsRecord',
@@ -148,6 +149,19 @@ export default{
           people: '小某'
         }]
     }
+  },
+  created () {
+    this.$http.get(`/activity/record/${this.contactUserId}/1/20`).then(res => {
+      if (res) {
+        this.tableData = res.data.data
+        console.dir(this.tableData)
+      }
+    })
+  },
+  computed: {
+    ...mapState([
+      'contactUserId'
+    ])
   },
   components: {
     coAudio

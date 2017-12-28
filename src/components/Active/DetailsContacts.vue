@@ -48,19 +48,19 @@
       border
       >
       <el-table-column
-        prop="name"
+        prop="toName"
         label="联系人"
         align='center'
         >
       </el-table-column>
       <el-table-column
-        prop="company"
+        prop="toCompany"
         label="公司名称"
         align='center'
         >
       </el-table-column>
       <el-table-column
-        prop="phone"
+        prop="toPhoneText"
         label="联系方式"
         align='center'
         >
@@ -82,13 +82,13 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="callResult"
+        prop="resultText"
         label="呼叫结果"
         align='center'
         >
       </el-table-column>
       <el-table-column
-        prop="people"
+        prop="fromName"
         label="呼叫人"
         align='center'
         >
@@ -100,6 +100,7 @@
 <script>
 /* 联系人 */
 import coAudio from '../common/voice'
+import {mapState} from 'vuex'
 export default{
   name: 'DetailsContacts',
   data () {
@@ -128,20 +129,31 @@ export default{
         }
       ],
       time: '',
-      tableData: [
-        {
-          name: '花花',
-          company: 'anavss',
-          phone: '13585517777',
-          callStatus: 0,
-          callVoice: 'http:www.baidu.com',
-          callResult: '已完成',
-          people: '小某'
-        }]
+      tableData: []
     }
+  },
+  props: {
+  },
+  created () {
+    this.$http.get(`/activity/contact/${this.contactUserId}/1/20`).then(res => {
+      if (res) {
+        this.tableData = res.data.data
+      }
+    })
+  },
+  computed: {
+    ...mapState([
+      'contactUserId'
+    ])
   },
   components: {
     coAudio
+  },
+  watch: {
+    Data (v) {
+      console.dir(v)
+      this.tableData = v
+    }
   }
 }
 </script>

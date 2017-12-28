@@ -38,6 +38,10 @@ export default {
       current: true
     }
   },
+  computed: {
+  },
+  created () {
+  },
   components: {
     detailsContacts, detailsRecord, detailsCall
   },

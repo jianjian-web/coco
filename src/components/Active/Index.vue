@@ -68,7 +68,7 @@
           >
         </el-table-column>
         <el-table-column
-          prop="creatTime"
+          prop="createTime"
           label="创建时间"
           align='center'
           >
@@ -114,7 +114,7 @@ import cardDo from './CardDo'
 import cardDone from './CardDone'
 import curd from '../../mixin/curd'
 import {mapMutations} from 'vuex'
-import {SET_ACTIVE_DATA} from '../../store/mutation-types'
+import {SET_ACTIVE_DATA, SET_CONTACT_USERID} from '../../store/mutation-types'
 
 export default {
   name: 'activeIndex',
@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     ...mapMutations([
-      SET_ACTIVE_DATA
+      SET_ACTIVE_DATA, SET_CONTACT_USERID
     ]),
     handleAddItem () {
       this[SET_ACTIVE_DATA](null)
@@ -149,6 +149,8 @@ export default {
       if (row.status === '草稿') {
         return
       }
+      console.dir(row)
+      this[SET_CONTACT_USERID](row.id)
       this.$router.push({path: '/active/details'})
     },
     handleEdit (row) {
