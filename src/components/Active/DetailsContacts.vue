@@ -8,6 +8,7 @@
           suffix-icon="el-icon-search"
           v-model="search"
           :clearable='true'
+          @change='handleSearch'
           >
         </el-input>
       </el-col>
@@ -70,6 +71,15 @@
         label="呼叫状态"
         align='center'
         >
+        <template slot-scope='scope'>
+          <span 
+            class='el-icon-phone-outline' 
+            style='font-size:20px' 
+            :class='{called:scope.row.callStatus === "YES"}'
+            @click='handleCall(scope.row)'
+          >
+          </span>
+        </template>
       </el-table-column>
       <el-table-column
         label="通话详情"
@@ -94,6 +104,17 @@
         >
       </el-table-column>
     </el-table>
+    <div class='pagination'>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </div>
   </div>
 </template>
 
@@ -101,6 +122,7 @@
 /* 联系人 */
 import coAudio from '../common/voice'
 import {mapState} from 'vuex'
+import {wsUrl} from '../../config/env'
 export default{
   name: 'DetailsContacts',
   data () {
@@ -129,15 +151,20 @@ export default{
         }
       ],
       time: '',
-      tableData: []
+      tableData: [],
+      currentPage: 1,
+      total: 0,
+      pageSize: 10,
+      searchData: {}
     }
   },
   props: {
   },
   created () {
-    this.$http.get(`/activity/contact/${this.contactUserId}/1/20`).then(res => {
+    this.refreshPage()
+    this.$http.get(`/activity/${this.contactUserId}`).then(res => { // 获取呼叫结果选项
       if (res) {
-        this.tableData = res.data.data
+        this.callResultsOption = res.data.data[0].options
       }
     })
   },
@@ -150,9 +177,44 @@ export default{
     coAudio
   },
   watch: {
-    Data (v) {
+  },
+  methods: {
+    handleCall (v) { // 拨号
       console.dir(v)
-      this.tableData = v
+      this.handleWS()
+    },
+    handleWS () {
+      this.ws = new WebSocket(wsUrl)
+      this.ws.onopen = function (e) {
+        console.log('Connection to server opened')
+      }
+      this.ws.onmessage = (res) => {
+        console.dir(res)
+      }
+    },
+    refreshPage (data) {
+      this.$http.get(`/activity/contact/${this.contactUserId}/${this.currentPage}/${this.pageSize}`, {
+        params: {params: data}
+      }).then(res => { // 获取table数据
+        if (res) {
+          this.tableData = res.data.data
+          this.total = res.data.totalCount
+        }
+      })
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.refreshPage()
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.refreshPage()
+    },
+    handleSearch (search) {
+      this.searchData.toName = search
+      this.searchData.toCompany = search
+      this.searchData.fromName = search
+      this.refreshPage(this.searchData)
     }
   }
 }
@@ -169,6 +231,13 @@ export default{
       margin-top:20px;
       margin-bottom:15px;
     }
+  }
+  .called{
+    color:#66b366;
+  }
+  .pagination{
+    float: right;
+    margin-top:20px;
   }
 }
 </style>

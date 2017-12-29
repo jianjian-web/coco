@@ -6,7 +6,7 @@
           呼叫人列表
         </p>
         <div class='searchWrapper'>
-          <el-input v-model='sourceSearch' placeholder="请输入姓名" class='search' suffix-icon="el-icon-search"></el-input>
+          <el-input @change='handleFromSearch' v-model='fromDataSearch' placeholder="请输入姓名" class='search' suffix-icon="el-icon-search"></el-input>
           <el-select collapse-tags v-model="sourceSelectValue" multiple placeholder="标签" class='search select'>
             <el-option
               v-for="item in tagOptions"
@@ -135,6 +135,7 @@ export default{
       currentProple: '', // 当前选中的呼叫人
       sourceSelectValue: [],
       tagOptions: ['标签1', '标签2'],
+      fromDataSearch: '',
       sourceSearch: '',
       sourceData: [  // 呼叫人数据
         {
@@ -182,9 +183,16 @@ export default{
     }
   },
   methods: {
-    getMember () { // 获取呼叫人列表
-      this.$http.get('/member/1/1000').then(res => { // 获取呼叫人列表
-        // console.log('呼叫人')
+    handleFromSearch (searchValue) { // 搜索呼叫人 TODO:
+      console.log(searchValue)
+      this.getMember(searchValue)
+    },
+    getMember (name) { // 获取呼叫人列表
+      this.$http.get('/member/1/1000', {
+        params: {params: {nickname: name}}
+      }).then(res => { // 获取呼叫人列表
+        console.log('呼叫人')
+        console.dir(res)
         if (res) {
           this.sourceData = res.data.data.map(item => {
             return Object.assign({}, item, {children: []})

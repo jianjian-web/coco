@@ -47,24 +47,30 @@ export default {
         console.dir(err)
       })
     },
-    $_query (url, current, pageSize, data) { // 查询分页
+    $_query (url, current, pageSize, data) { // 查询分页(只适用于我的活动页面了)
+      if (!this.publishStatus) { current = 1 }
       this.$http.get(`/${url}/${current}/${pageSize}`, {
         params: {params: data}
       }).then(res => {
-        this.tableData = []
-        this.total = res.data.totalCount
-        if (res.data.extras) {
-          const arr = res.data.extras.drafts.map(item => {
-            return Object.assign({}, item, {status: '草稿'})
-          })
-          this.tableData = this.tableData.concat(arr)
-          this.total += arr.length
-        }
-        if (res.data.data.length) {
-          const arr = res.data.data.map(item => {
-            return Object.assign({}, item, {status: '已发布'})
-          })
-          this.tableData = this.tableData.concat(arr)
+        if (res) {
+          this.tableData = []
+          this.total = res.data.totalCount
+          if (this.publishStatus) {
+            if (res.data.data.length) {
+              const arr = res.data.data.map(item => {
+                return Object.assign({}, item, {status: '已发布'})
+              })
+              this.tableData = this.tableData.concat(arr)
+            }
+          } else {
+            if (res.data.extras) {
+              const arr = res.data.extras.drafts.map(item => {
+                return Object.assign({}, item, {status: '草稿'})
+              })
+              this.tableData = this.tableData.concat(arr)
+              this.total = arr.length
+            }
+          }
         }
         console.dir(this.tableData)
       })

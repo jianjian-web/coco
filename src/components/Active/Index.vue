@@ -8,11 +8,12 @@
           suffix-icon="el-icon-search"
           v-model="input2"
           :clearable='true'
+          @change='handleSearch'
           >
         </el-input>
       </el-col>
       <el-col :span="4" class='row-item'>
-        <el-select v-model="value" placeholder="状态" style='width:100%' :clearable='true'>
+        <el-select v-model="publishStatus" placeholder="状态" style='width:100%' :clearable='true' @change='handlePulishStatusChange'>
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -85,6 +86,7 @@
         </el-table-column>
       </el-table>
       <div class='pagination'>
+        <!-- <span style='height:27px;line-height:27px;margin-top:-2px;margin-right:5px;'>草稿 {{totalCao}} 条</span> -->
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -122,18 +124,19 @@ export default {
   data () {
     return {
       input2: '',
-      value: '',
+      publishStatus: 1,
       options: [{
-        value: '草稿',
+        value: 0,
         label: '草稿'
       }, {
-        value: '已发布',
+        value: 1,
         label: '已发布'
       }],
       dateValue: '',
       tableData: [],
       currentPage: 1,
       total: 0,
+      // totalCao: 0, // 草稿的总数
       pageSize: 10
     }
   },
@@ -168,6 +171,12 @@ export default {
     handleCurrentChange (val) {
       this.currentPage = val
       this.refreshPage()
+    },
+    handleSearch (v) { // 搜索活动名称
+      this.refreshPage({name: v})
+    },
+    handlePulishStatusChange (v) { // 当状态改变，刷新试图
+      this.refreshPage()
     }
   },
   components: {
@@ -191,6 +200,8 @@ export default {
   }
   .active-main{
     .pagination{
+      // display: flex;
+      // align-items: center;
       float: right;
       margin-top:20px;
     }
